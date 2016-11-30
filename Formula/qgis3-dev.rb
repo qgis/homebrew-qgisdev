@@ -211,13 +211,13 @@ class Qgis3Dev < Formula
     # end
 
     mkdir "build" do
-      bbedit = "/usr/local/bin/bbedit"
-      cmake_config = Pathname("#{Dir.pwd}/qgis3-dev_cmake-config.txt")
-      cmake_config.write ["cmake ..", *args].join(" \\\n")
-      system bbedit, cmake_config.to_s
+      # bbedit = "/usr/local/bin/bbedit"
+      # cmake_config = Pathname("#{Dir.pwd}/qgis3-dev_cmake-config.txt")
+      # cmake_config.write ["cmake ..", *args].join(" \\\n")
+      # system bbedit, cmake_config.to_s
       # raise
       system "cmake", "..", *args
-      system bbedit, "CMakeCache.txt"
+      # system bbedit, "CMakeCache.txt"
       # raise
       system "make"
       system "make", "install"
