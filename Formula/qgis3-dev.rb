@@ -18,6 +18,7 @@ class Qgis3Dev < Formula
   version "2.99"
 
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
+  option "without-qt-webkit", "Build without webkit based functionality"
   option "without-server", "Build without QGIS Server (qgis_mapserv.fcgi)"
   option "without-postgresql", "Build without current PostgreSQL client"
   option "with-globe", "Build with Globe plugin, based upon osgEarth"
@@ -29,7 +30,6 @@ class Qgis3Dev < Formula
   # option "with-qt-mysql", "Build extra Qt MySQL plugin for eVis plugin"
   option "with-qspatialite", "Build QSpatialite Qt database driver"
   option "with-api-docs", "Build the API documentation with Doxygen and Graphviz"
-  option "without-qt-webkit", "Build without webkit based functionality"
 
   depends_on NoQt4Requirement
 
@@ -43,6 +43,7 @@ class Qgis3Dev < Formula
   end
   depends_on :python3
   depends_on "qt5" # keg_only
+  depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
   depends_on "sip" => ["with-python3"]
   depends_on "pyqt5"
   depends_on "qca"
@@ -57,9 +58,6 @@ class Qgis3Dev < Formula
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
-  if build.with? "qt-webkit"
-    depends_on "osgeo/osgeo4mac/qt5-webkit"
-  end
 
   # core providers
   depends_on "osgeo/osgeo4mac/gdal2" # keg_only
@@ -143,6 +141,8 @@ class Qgis3Dev < Formula
       -DWITH_CUSTOM_WIDGETS=TRUE
     ]
 
+    args << "-DWITH_QTWEBKIT=#{build.with?("qt-webkit") ? "TRUE" : "FALSE"}"
+
     # Prefer opt_prefix for CMake modules that find versioned prefix by default
     # This keeps non-critical dependency upgrades from breaking QGIS linking
     args << "-DGDAL_LIBRARY=#{Formula["gdal2"].opt_lib}/libgdal.dylib"
@@ -162,10 +162,6 @@ class Qgis3Dev < Formula
     args << "-DSPATIALINDEX_INCLUDE_DIR=#{Formula["spatialindex"].opt_include}/spatialindex"
     args << "-DSPATIALITE_INCLUDE_DIR=#{Formula["libspatialite"].opt_include}"
     args << "-DSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}"
-
-    if !build.with? "qt-webkit"
-      args << "-DWITH_QTWEBKIT=FALSE"
-    end
 
     args << "-DWITH_SERVER=#{build.with?("server") ? "TRUE" : "FALSE"}"
     if build.with? "server"
