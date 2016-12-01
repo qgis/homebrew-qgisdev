@@ -29,6 +29,7 @@ class Qgis3Dev < Formula
   # option "with-qt-mysql", "Build extra Qt MySQL plugin for eVis plugin"
   option "with-qspatialite", "Build QSpatialite Qt database driver"
   option "with-api-docs", "Build the API documentation with Doxygen and Graphviz"
+  option "without-qt-webkit", "Build without webkit based functionality"
 
   depends_on NoQt4Requirement
 
@@ -56,6 +57,9 @@ class Qgis3Dev < Formula
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
+  if build.with? "qt-webkit"
+    depends_on "osgeo/osgeo4mac/qt5-webkit"
+  end
 
   # core providers
   depends_on "osgeo/osgeo4mac/gdal2" # keg_only
@@ -131,7 +135,6 @@ class Qgis3Dev < Formula
       -DQGIS_MACAPP_DEV_PREFIX='#{dev_fw}'
       -DQGIS_MACAPP_INSTALL_DEV=TRUE
       -DWITH_QWTPOLAR=TRUE
-      -DWITH_QTWEBKIT=TRUE
       -DWITH_INTERNAL_QWTPOLAR=FALSE
       -DWITH_ASTYLE=FALSE
       -DWITH_QSCIAPI=FALSE
@@ -159,6 +162,10 @@ class Qgis3Dev < Formula
     args << "-DSPATIALINDEX_INCLUDE_DIR=#{Formula["spatialindex"].opt_include}/spatialindex"
     args << "-DSPATIALITE_INCLUDE_DIR=#{Formula["libspatialite"].opt_include}"
     args << "-DSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}"
+
+    if !build.with? "qt-webkit"
+      args << "-DWITH_QTWEBKIT=FALSE"
+    end
 
     args << "-DWITH_SERVER=#{build.with?("server") ? "TRUE" : "FALSE"}"
     if build.with? "server"
