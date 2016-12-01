@@ -62,10 +62,6 @@ echo "BUILD_DIR set to: ${BUILD_DIR}"
 echo "Building QGIS..."
 cd $BUILD_DIR
 time $CMAKE --build . --target all -- -j${CPUCORES}
-if [ $? -gt 0 ]; then
-    echo -e "\nERROR building QGIS"
-    exit 1
-fi
 
 # # stage/compile plugins so they are available when running from build directory
 # echo "Staging plugins to QGIS build directory..."
@@ -80,19 +76,11 @@ if [ -d "${BUILD_DIR}/output/bin/QGIS.app" ]; then
   # this differs from LSEnvironment in bundled app; see set-qgis-app-env.py
   echo "Setting QGIS.app environment variables..."
   $SCRIPT_DIR/qgis-set-app-env.py -p $HB -b $BUILD_DIR "${BUILD_DIR}/output/bin/QGIS.app"
-  if [ $? -gt 0 ]; then
-      echo -e "\nERROR setting QGIS.app environment variables"
-      exit 1
-  fi
 fi
 
 if [ -d "${BUILD_DIR}/output/bin/QGIS Browser.app" ]; then
   echo "Setting QGIS Browser.app environment variables..."
   $SCRIPT_DIR/qgis-set-app-env.py -p $HB -b $BUILD_DIR "${BUILD_DIR}/output/bin/QGIS Browser.app"
-  if [ $? -gt 0 ]; then
-      echo -e "\nERROR setting QGIS Browser.app environment variables"
-      exit 1
-  fi
 fi
 
 exit 0
