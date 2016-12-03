@@ -1,12 +1,25 @@
 class NoQt4Requirement < Requirement
   fatal true
-  satisfy(:build_env => false) { !Formula["qt"].linked_keg.exist? }
+  satisfy(:build_env => false) { !qt_linked && !pyqt_linked }
 
-  def message; <<-EOS.undent
-    Compilation can fail if deprecated `qt` formula is installed and linked.
+  def qt_linked
+    Formula["qt"].linked_keg.exist?
+  rescue
+    return false
+  end
 
-    Unlink with `brew unlink qt` or remove with `brew uninstall qt`.
-  EOS
+  def pyqt_linked
+    Formula["pyqt"].linked_keg.exist?
+  rescue
+    return false
+  end
+
+  def message
+    s = "Compilation can fail if deprecated Qt4 formulae are installed and linked:\n\n"
+
+    s += "Unlink with `brew unlink qt` or remove with `brew uninstall qt`\n" if qt_linked
+    s += "Unlink with `brew unlink pyqt` or remove with `brew uninstall pyqt`\n" if pyqt_linked
+    s
   end
 end
 
