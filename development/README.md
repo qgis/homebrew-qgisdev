@@ -153,7 +153,8 @@ The scripts will be used when configuring/building/installing the QGIS project i
 > Note: scripts expect the HOMEBREW_PREFIX environment variable to be set, e.g. in your `.bash_profile`:
 
   ```sh
-  export HOMEBREW_PREFIX=/usr/local
+  # after prepending `brew --prefix` to PATH (not needed for default /usr/local Homebrew)
+  export HOMEBREW_PREFIX=$(brew --prefix)
   ```
 
 * [qgis-cmake-setup.sh](../scripts/qgis-cmake-setup.sh) - For generating CMake option string for use in Qt Creator (or build scripts) when built off dependencies from this and other taps. Edit CMake options to suit your build needs. Note, the current script usually has CMake options for building QGIS with *most* core options that the current `qgis3-xx` Homebrew formula supports, which may not include things like Oracle support, etc. You will probably want to edit it and (un)comment out such lines for an initial build. 
@@ -169,94 +170,107 @@ The scripts will be used when configuring/building/installing the QGIS project i
 **Example** Terminal.app session for cloning and building QGIS from scratch, based off of `qgis-3-dev` formula dependencies and assuming Xcode.app, Xcode Command Line Tools, and Homebrew are _already installed_. BASH shell used here.
 
 ```sh
-# setup environment variables
+# Setup environment variables
 export HOMEBREW_PREFIX=$(brew --prefix)
 export HOMEBREW_NO_AUTO_UPDATE=1
 
+# Optionally update Homebrew (recommended)
 brew update
 
-# install some handy base formulae
+# Install some handy base formulae
 brew install bash-completion
 brew install git
+brew install cmake
 
-# decide to use recommended Homebrew's Python3
-# (could use Anaconda's Python 3, etc. instead)
+# Decide to use recommended Homebrew's Python3
+# (could use Anaconda's Python 3, etc. instead, though bottles may not work)
 brew install python3
 
-# install some Python dependencies
+# Install some Python dependencies
+# NOTE: may require `sudo` if Python 3 is installed in a root-owned location 
 pip3 install numpy psycopg2 matplotlib pyparsing pyyaml mock nose2
 
-# tap some useful Homebrew taps
+# Add some useful Homebrew taps
+# NOTE: try to avoid tapping homebrew/boneyard
 brew tap homebrew/science
 brew tap homebrew/python
 brew tap qgis/qgisdev
 brew tap osgeo/osgeo4mac
 
-# make sure deprecated Qt4 is not linked
+# Make sure deprecated Qt4 formulae are not linked
 brew unlink qt
+brew unlink pyqt
 
-# install GDAL/OGR with decent driver support (do NOT install `gdal` formula)
-# note: keg-only, e.g. only available from HOMEBREW_PREFIX/opt/gdal2 prefix
+# Install and verify GDAL/OGR with decent driver support
+# Do NOT install `gdal` (1.11.x) formula, unless you truely need it otherwise
+# NOTE: keg-only, e.g. only available from HOMEBREW_PREFIX/opt/gdal2 prefix
 brew install osgeo/osgeo4mac/gdal2 --with-complete --with-libkml --with-python3
-
-# verify GDAL/OGR install
 brew test osgeo/osgeo4mac/gdal2
-# should be no .dylib loading errors when loading drivers (scroll to top of output)
+
+# If failure, review any .dylib errors when loading drivers (scroll to top of output)
 $HOMEBREW_PREFIX/opt/gdal2/bin/gdalinfo --formats
 $HOMEBREW_PREFIX/opt/gdal2/bin/ogrinfo --formats
 
-# optionally add Processing framework extra utilities
+# Optionally add and verify Processing framework extra utilities
 brew install osgeo/osgeo4mac/grass7
 brew install osgeo/osgeo4mac/gdal2-grass7
+brew test osgeo/osgeo4mac/grass7
+brew test osgeo/osgeo4mac/gdal2-grass7
 
 brew install osgeo/osgeo4mac/saga-gis --with-app
+brew test osgeo/osgeo4mac/saga-gis
 
-# this one's huge, bringing in many dependencies
+# This one's huge, bringing in large dependencies
 brew install orfeo5
+brew test orfeo5
 
-# install remaining dependencies for qgis3-dev formula, but not QGIS
-# this may take a loooong time if there are missing bottles
+# Install remaining dependencies for qgis3-dev formula, but not QGIS
+# This may take a loooong time if there are missing bottles, which need built
 brew install qgis3-dev --only-dependencies [--with-other-options]
 
-# optinally, create a root directory for source building
-mkdir -p /src && cd ~/src
+# Base directory path of src, install and build directories
+BASE_DIR=$HOME/src
+mkdir -p $BASE_DIR
+cd $BASE_DIR
 
-# save source directory path
-SRC_DIR=$(pwd)
+# Create and save a directory to install a final QGIS.app
+QGIS_INSTALL=$BASE_DIR/QGIS_install
+mkdir -p $QGIS_INSTALL
 
-# create a directory to install a final QGIS.app
-mkdir QGIS_install
+# Clone QGIS source tree
+QGIS_SRC=$BASE_DIR/QGIS
+# This may take a looong time, depending upon connection speed
+git clone https://github.com/qgis/QGIS.git $QGIS_SRC
+cd $QGIS_SRC
 
-# clone QGIS source tree
-git clone https://github.com/qgis/QGIS.git
-cd QGIS
+# Setup out-of-source build directory, inside of QGIS tree
+BUILD_DIR=$BASE_DIR/QGIS/build
+mkdir -p $BUILD_DIR
+cd $BUILD_DIR
 
-# setup out-of-source build directory, inside of QGIS tree
-mkdir -p build && cd build
+# Where you have copied the build scripts (here using the defaults, as is)
+BUILD_SCRIPTS=$(brew --repository qgis/qgisdev)/scripts
 
-# for next commands, $(brew --repository qgis/qgisdev) can be replaced with 
-# where you have copied the build scripts
-
-# configure CMake and generate build files
+# Configure CMake and generate build files
 # usage: qgis-cmake-setup.sh 'source directory' 'build directory' 'install directory'
 #        (directories need to absolute paths)
-$(brew --repository qgis/qgisdev)/scripts/qgis-cmake-setup.sh $SRC_DIR/QGIS $(pwd) $SRC_DIR/QGIS_install
+$BUILD_SCRIPTS/qgis-cmake-setup.sh $QGIS_SRC $BUILD_DIR $QGIS_INSTALL
 
-# review ro edit what was configured
-ccmake $(pwd)
+# Review or edit what was configured (almost all dependencies should be from Homebrew)
+ccmake $BUILD_DIR
 
-# build QGIS
+# Build QGIS
 # usage: qgis-dev-build.sh 'absolute path to build directory'
-$(brew --repository qgis/qgisdev)/scripts/qgis-dev-build.sh $(pwd)
+$BUILD_SCRIPTS/qgis-dev-build.sh $BUILD_DIR
 
-# run QGIS test suite from build directory
+# Run QGIS test suite from build directory
 # source environment and run tests inside of a bash subshell, 
 #   so your shell environment is not polluted
-( source $(brew --repository qgis/qgisdev)/scripts/qgis-dev.env $(pwd) && ctest )
+( source $BUILD_SCRIPTS/qgis-dev.env $BUILD_DIR && ctest )
 
-# install QGIS.app
+# Install QGIS.app
 # note: app bundle is moveable about the filesystem, but not to another Mac
-$(brew --repository qgis/qgisdev)/scripts/qgis-dev-install.sh $(pwd)
+$BUILD_SCRIPTS/qgis-dev-install.sh $BUILD_DIR
 ```
 
 ## Configure/build/install QGIS in Qt Creator.app
