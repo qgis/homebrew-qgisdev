@@ -113,6 +113,10 @@ class Qgis3Dev < Formula
   #   sha256 "3d0adca0c8684f3d907c626fc86d93d73165e184960d16ae883fca665ecc32e6"
   #   version "2.0.0"
   # end
+  #
+
+  depends_on "future" => :python3
+
 
   def install
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
