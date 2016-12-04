@@ -113,9 +113,13 @@ class Qgis3Dev < Formula
   #   sha256 "3d0adca0c8684f3d907c626fc86d93d73165e184960d16ae883fca665ecc32e6"
   #   version "2.0.0"
   # end
-  #
+  
+  # Python dependencies
 
   depends_on "future" => :python3
+  depends_on "psycopg2" => :python3
+  depends_on "numpy" => :python3
+  
 
 
   def install
