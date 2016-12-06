@@ -4,6 +4,8 @@ In addition to using this tap to install [QGIS development formulae](../Formula)
 
 > Note: This setup, though heavily tested, is currently _experimental_ and may change.
 
+For the terminally lazy, who are already comfortable with Homebrew, [jump to sample Terminal session](#terminal).
+
 ## Development Tools
 
 This tutorial is based upon the following software:
@@ -57,7 +59,7 @@ brew install git
 
 The first important decision to make is regarding whether to use Homebrew's or or another Python 3.x. Currently macOS does not ship with Python 3, and QGIS 3 should be built against Python 3.x.
 
-> Note: The more formulae you install from bottles, the higher likelihood you will end up running into a formulae that requires installing Homebrew's Python 3, since bottles are always built against that Python.
+> Note: The more Homebrew formulae you install from bottles, the higher likelihood you will end up running into a formulae that requires installing Homebrew's Python 3, since bottles are always built against that Python.
 
 If using Homebrew Python 3.x, install with:
 
@@ -69,12 +71,13 @@ brew install python3 [--with-option ...]
 
 Regardless of which Python interpreter you use, always ensure it is the first found `python3` on PATH in your Terminal session where you run `brew` commands, i.e. `which python3` points to the correct Python 3 you wish to use when building formulae.
 
-### Install required Python modules
+### Install required Python packages
 
 Use [pip3](https://pypi.python.org/pypi/pip/) that was installed against the same Python 3 you are using when installing formulae. You can also tap [homebrew/python](https://github.com/Homebrew/homebrew-python) for some more complex package installs.
 
-Reference `pip3 --help` for info on usage.
+Reference `pip3 --help` for info on usage (usually just `pip install <package>`).
 
+* [future](https://pypi.python.org/pypi/future)
 * [numpy](https://pypi.python.org/pypi/numpy)
 * [psycopg2](https://pypi.python.org/pypi/psycopg2)
 * [matplotlib](https://pypi.python.org/pypi/matplotlib)
@@ -83,7 +86,7 @@ Reference `pip3 --help` for info on usage.
 * [pyyaml](https://pypi.python.org/pypi/PyYAML)
 * [nose2](https://pypi.python.org/pypi/nose2)
 
-Other Python packages automatically installed by Homebrew from QGIS dependencies:
+Other Python packages **automatically installed** by Homebrew from QGIS dependencies:
 
 * [sip](https://github.com/Homebrew/homebrew-core/blob/master/Formula/sip.rb)
 * [PyQt5](https://github.com/Homebrew/homebrew-core/blob/master/Formula/pyqt5.rb)
@@ -165,9 +168,9 @@ The scripts will be used when configuring/building/installing the QGIS project i
 
 * [qgis-dev-install.sh](../scripts/qgis-dev-install.sh) - Installs the app and ensures QGIS.app has proper environment variables, so it can be moved around on the filesystem. Currently, QGIS.app bundling beyond [QGIS_MACAPP_BUNDLE=0](https://github.com/qgis/QGIS/tree/master/mac) is not supported. Since all dependencies are in your `HOMEBREW_PREFIX`, _no complex bundling is necessary_, unless you intend to relocate the built app to another Mac (which is a planned feature).
 
-## Configure/build/install QGIS in a Terminal.app session
+## <a name="terminal"></a>Configure/build/install QGIS in a Terminal.app session
 
-**Example** Terminal.app session for cloning and building QGIS from scratch, based off of `qgis-3-dev` formula dependencies and assuming Xcode.app, Xcode Command Line Tools, and Homebrew are _already installed_. BASH shell used here.
+**Example** Terminal.app session for cloning and building QGIS from scratch, based off of `qgis-3-dev` formula dependencies and assuming Xcode.app, Xcode Command Line Tools, and Homebrew are _already installed_. BASH used here.
 
 ```sh
 # Setup environment variables
@@ -188,7 +191,7 @@ brew install python3
 
 # Install some Python dependencies
 # NOTE: may require `sudo` if Python 3 is installed in a root-owned location 
-pip3 install numpy psycopg2 matplotlib pyparsing pyyaml mock nose2
+pip3 install future numpy psycopg2 matplotlib pyparsing pyyaml mock nose2
 
 # Add some useful Homebrew taps
 # NOTE: try to avoid tapping homebrew/boneyard
