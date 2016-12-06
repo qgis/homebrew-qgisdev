@@ -54,7 +54,11 @@ class Qgis3Dev < Formula
     depends_on "graphviz" => [:build, "with-freetype"]
     depends_on "doxygen" => [:build, "with-dot"] # with graphviz support
   end
+
   depends_on :python3
+  depends_on "future" => :python3
+  depends_on "psycopg2" => :python3
+
   depends_on "qt5" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
   depends_on "sip" => ["with-python3"]
@@ -405,16 +409,15 @@ class Qgis3Dev < Formula
 
     EOS
 
-    # check for required run-time Python module dependencies
-    # TODO: add "pyspatialite" when PyPi package supports spatialite 4.x
+    # check for recommended run-time Python module dependencies
     xm = []
-    %w[psycopg2 matplotlib pyparsing future].each do |m|
+    %w[matplotlib pyparsing mock nose2].each do |m|
       xm << m unless module_importable? m
     end
     unless xm.empty?
       s += <<-EOS.undent
         #{Tty.red}
-        The following Python modules are needed by QGIS during run-time:
+        The following Python modules are recommended for QGIS development/testing:
 
             #{xm.join(", ")}
 
@@ -423,14 +426,6 @@ class Qgis3Dev < Formula
             pip3 install <module>
         #{Tty.red}
         #{Tty.reset}
-      EOS
-    end
-    # TODO: remove this when libqscintilla.dylib becomes core build dependency?
-    unless module_importable? "PyQt5.Qsci"
-      s += <<-EOS.undent
-        QScintilla Python module is needed by QGIS during run-time.
-        Ensure `qscintilla2` formula is linked.
-
       EOS
     end
 
