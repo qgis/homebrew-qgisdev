@@ -1,5 +1,7 @@
 # Homebrew-qgisdev
 
+[![Build Status](https://travis-ci.org/qgis/homebrew-qgisdev.svg?branch=master)](https://travis-ci.org/qgis/homebrew-qgisdev)
+
 Formulae for macOS Homebrew package manager to aid in building the development branch of QGIS.
 
 ## How do I install these formulae?
