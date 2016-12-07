@@ -403,7 +403,7 @@ class Qgis3Dev < Formula
         export PYTHONPATH=#{python_site_packages}:$PYTHONPATH
 
       Developer frameworks are installed in:
-        #{opt_lib}/qgis-dev
+        #{opt_lib}/#{name}
         NOTE: not symlinked to HOMEBREW_PREFIX/Frameworks, which affects isolation.
               Use dyld -F option in CPPFLAGS/LDFLAGS when building other software.
 
