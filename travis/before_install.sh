@@ -52,7 +52,7 @@ for f in ${CHANGED_FORMULAE};do
     echo 'import site; site.addsitedir("${HOMEBREW_PREFIX}/opt/gdal2/lib/python${PY_VER}/site-packages")' \
       >> ${HOME}/Library/Python/${PY_VER}/lib/python/site-packages/gdal2.pth
 
-    if [[ "${f}" =~ "^qgis" ]];then
+    if [[ "${f}" =~ "qgis" ]];then
       echo "Installing QGIS Python3 dependencies"
       ${HOMEBREW_PREFIX}/bin/pip3 install future mock nose2 numpy psycopg2 pyyaml
     fi

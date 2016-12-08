@@ -417,7 +417,7 @@ class Qgis3Dev < Formula
     unless xm.empty?
       s += <<-EOS.undent
         #{Tty.red}
-        The following Python modules are recommended for QGIS 3 development/testing:
+        The following Python modules are recommended for QGIS development/testing:
 
             #{xm.join(", ")}
 
