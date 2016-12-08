@@ -64,8 +64,13 @@ else
   HB=$HOMEBREW_PREFIX
 fi
 
-if [ -d $HB/Frameworks/QtCore.framework/Versions/4 ]; then
-  echo 'Unlink Qt4 Homebrew formula, e.g. `brew unlink qt`'
+if [ -L $HB/var/homebrew/linked/qt ]; then
+  echo 'Unlink Qt4 Homebrew formula: `brew unlink qt`'
+  exit 1
+fi
+
+if [ -L $HB/var/homebrew/linked/pyqt ]; then
+  echo 'Unlink PyQt4 Homebrew formula: `brew unlink pyqt`'
   exit 1
 fi
 
