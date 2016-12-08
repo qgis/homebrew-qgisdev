@@ -172,6 +172,10 @@ def main():
     for k, v in evars.items():
         plist_bud("Add :LSEnvironment:{0} string '{1}'".format(k, v), plist)
 
+    # set app HiDPI support
+    plist_bud('Delete :NSHighResolutionCapable', plist, quiet=True)
+    plist_bud("Add :NSHighResolutionCapable string 'True'", plist)
+
     # set bundle identifier, so package installers don't accidentally install
     # updates into dev bundles
     app_id = 'qgis'
