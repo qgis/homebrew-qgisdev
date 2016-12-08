@@ -3,28 +3,36 @@ os: osx
 env: OSX=10.12
 osx_image: xcode8.1
 rvm: system
+sudo: required
 
 before_install:
   - export TRAVIS_COMMIT="$(git rev-parse --verify -q HEAD)"
-  - if [ -f ".git/shallow" ]; then
-      travis_retry git fetch --unshallow;
+  - export CHANGED_FORMULAE=$(git diff --name-status $TRAVIS_COMMIT^ $TRAVIS_COMMIT | sed -n -E 's#^(A|M)[[:space:]]+Formula/(.+)\.rb$#\2#p' )
+  - |
+    if [ "${CHANGED_FORMULAE}" == "" ]; then
+      echo "Skipping CI; no changed formulae found in $TRAVIS_BUILD_DIR"
+      # false positive, but better than false negative?
+      travis_terminate 0
+    else
+      echo "Changed formulae are ${CHANGED_FORMULAE}"
     fi
-  - sudo chown -R $USER "$(brew --repo)"
-  - git -C "$(brew --repo)" reset --hard origin/master
-  - git -C "$(brew --repo)" clean -qxdff
-  - brew update || brew update
-  - rm -rf "$(brew --repo $TRAVIS_REPO_SLUG)"
-  - mkdir -p "$(brew --repo $TRAVIS_REPO_SLUG)"
-  - rsync -az "$TRAVIS_BUILD_DIR/" "$(brew --repo $TRAVIS_REPO_SLUG)"
-  - export TRAVIS_BUILD_DIR="$(brew --repo $TRAVIS_REPO_SLUG)"
-  - cd "$(brew --repo)"
+  - export HOMEBREW_REPOSITORY="$(brew --repo)"
+  - sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"
+  - git -C "$HOMEBREW_REPOSITORY" reset --hard origin/master
+  - mkdir -p "$(brew --repo)/Library/Taps/qgis"
+  - ln -s "$TRAVIS_BUILD_DIR" "$(brew --repo)/Library/Taps/qgis/homebrew-qgisdev"
+  - cd "$(brew --repo)/Library/Taps/qgis/homebrew-qgisdev"
+  - chmod 0644 $(brew --repo)/Library/Taps/qgis/homebrew-qgisdev/*.rb
+  - export TRAVIS_BUILD_DIR="$(brew --repo)/Library/Taps/qgis/homebrew-qgisdev"
   - export HOMEBREW_DEVELOPER="1"
+  - export HOMEBREW_PREFIX=$(brew --prefix)
   - ulimit -n 1024
+  - ./travis/before_install.sh
 
-script:
-  - brew test-bot
+install: ./travis/install.sh
 
-notifications:
-  email:
-    on_success: never
-    on_failure: always
+#before_script: ./travis/before_script.sh
+
+script: ./travis/script.sh
+
+#after_script: ./travis/after_script.sh
