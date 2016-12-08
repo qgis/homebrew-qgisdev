@@ -65,11 +65,7 @@ time $CMAKE --build . --target all -- -j${CPUCORES}
 
 # # stage/compile plugins so they are available when running from build directory
 # echo "Staging plugins to QGIS build directory..."
-# make -j ${CPUCORES} staged-plugins-pyc
-# if [ $? -gt 0 ]; then
-#     echo -e "\nERROR staging plugins to QGIS build directory"
-#     exit 1
-# fi
+# $CMAKE --build . --target staged-plugins-pyc
 
 # write LSEnvironment entity to app's Info.plist
 if [ -d "${BUILD_DIR}/output/bin/QGIS.app" ]; then
