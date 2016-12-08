@@ -17,11 +17,11 @@ before_install:
   - export HOMEBREW_REPOSITORY="$(brew --repo)"
   - sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"
   - git -C "$HOMEBREW_REPOSITORY" reset --hard origin/master
-  - mkdir -p "$(brew --repo)/Library/Taps/qgis"
-  - ln -s "$TRAVIS_BUILD_DIR" "$(brew --repo)/Library/Taps/qgis/homebrew-qgisdev"
-  - cd "$(brew --repo)/Library/Taps/qgis/homebrew-qgisdev"
-  - chmod 0644 $(brew --repo)/Library/Taps/qgis/homebrew-qgisdev/*.rb
-  - export TRAVIS_BUILD_DIR="$(brew --repo)/Library/Taps/qgis/homebrew-qgisdev"
+  - mkdir -p "$HOMEBREW_REPOSITORY/Library/Taps/qgis"
+  - ln -s "$TRAVIS_BUILD_DIR" "$HOMEBREW_REPOSITORY/Library/Taps/qgis/homebrew-qgisdev"
+  - cd "$HOMEBREW_REPOSITORY/Library/Taps/qgis/homebrew-qgisdev"
+  - chmod -f 0644 $HOMEBREW_REPOSITORY/Library/Taps/qgis/homebrew-qgisdev/Formula/*.rb
+  - export TRAVIS_BUILD_DIR="$HOMEBREW_REPOSITORY/Library/Taps/qgis/homebrew-qgisdev"
   - export HOMEBREW_DEVELOPER="1"
   - export HOMEBREW_PREFIX=$(brew --prefix)
   - ulimit -n 1024
