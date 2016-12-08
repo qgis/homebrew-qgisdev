@@ -382,7 +382,7 @@ class Qgis3Dev < Formula
 
   def caveats
     s = <<-EOS.undent
-      Bottles support only Homebrew's Python
+      Bottles support only Homebrew's Python3
 
       QGIS is built as an application bundle. Environment variables for the
       Homebrew prefix are embedded in QGIS.app:
@@ -399,8 +399,8 @@ class Qgis3Dev < Formula
             when launching via the wrapper script, while launching QGIS.app
             bundle they are not.
 
-      For standalone Python development, set the following environment variable:
-        export PYTHONPATH=#{python_site_packages}:$PYTHONPATH
+      For standalone Python3 development, set the following environment variable:
+        export PYTHONPATH=#{qgis_python_packages}:#{gdal_python_packages}:#{python_site_packages}:$PYTHONPATH
 
       Developer frameworks are installed in:
         #{opt_lib}/#{name}
@@ -468,6 +468,10 @@ class Qgis3Dev < Formula
 
   def python_prefix
     `#{python_exec} -c 'import sys;print(sys.prefix)'`.strip
+  end
+
+  def qgis_python_packages
+    opt_lib/"python#{py_ver}/site-packages".to_s
   end
 
   def gdal_python_packages
