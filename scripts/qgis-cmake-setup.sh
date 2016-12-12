@@ -48,7 +48,7 @@ if ! [[ "$INSTALL_DIR" = /* ]] || ! [ -d "$INSTALL_DIR" ]; then
   usage
 fi
 
-if ! (command -v cmake >/dev/null 2>&1); then
+if ! (which -s cmake); then
   echo "CMake executable 'cmake' not found in \$PATH"
   exit 1
 fi
@@ -78,7 +78,7 @@ rm -Rf $BUILD_DIR/*
 
 cd $BUILD_DIR
 
-if (command -v ninja >/dev/null 2>&1); then
+if (which -s ninja); then
   CMAKE_GENERATOR='Ninja'
 else
   CMAKE_GENERATOR='Unix\ Makefiles'
