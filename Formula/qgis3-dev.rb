@@ -77,7 +77,8 @@ class Qgis3Dev < Formula
   depends_on "postgresql" => :recommended
 
   # core providers
-  depends_on "osgeo/osgeo4mac/gdal2" => ["with-python3"] # keg_only
+  depends_on "osgeo/osgeo4mac/gdal2" # keg_only
+  depends_on "osgeo/osgeo4mac/gdal2-python" => ["with-python3"] # keg_only
   depends_on "osgeo/osgeo4mac/oracle-client-sdk" if build.with? "oracle"
   # TODO: add MSSQL third-party support formula?, :optional
 
@@ -232,7 +233,7 @@ class Qgis3Dev < Formula
 
     mkdir "build" do
       # bbedit = "/usr/local/bin/bbedit"
-      # cmake_config = Pathname("#{Dir.pwd}/qgis3-dev_cmake-config.txt")
+      # cmake_config = Pathname("#{Dir.pwd}/#{name}_cmake-config.txt")
       # cmake_config.write ["cmake ..", *args].join(" \\\n")
       # system bbedit, cmake_config.to_s
       # raise
@@ -300,6 +301,7 @@ class Qgis3Dev < Formula
     pypths = %W[#{opt_lib}/python#{py_ver}/site-packages #{pypth}]
 
     pths.insert(0, gdal_opt_bin)
+    pths.insert(0, gdal_python_opt_bin)
     pypths.insert(0, gdal_python_packages)
 
     if opts.include?("with-gpsbabel")
@@ -475,7 +477,11 @@ class Qgis3Dev < Formula
   end
 
   def gdal_python_packages
-    Formula["gdal2"].opt_lib/"python#{py_ver}/site-packages".to_s
+    Formula["gdal2-python"].opt_lib/"python#{py_ver}/site-packages".to_s
+  end
+
+  def gdal_python_opt_bin
+    Formula["gdal2-python"].opt_bin.to_s
   end
 
   def gdal_opt_bin
