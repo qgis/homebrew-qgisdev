@@ -49,9 +49,10 @@ def env_vars(ap, hb, qb='', ql=''):
     options = OrderedDict()
     # will probably generate duplicate paths in PATH
     options['PATH'] = '{hb}/opt/gdal2/bin:' \
+                      '{hb}/opt/gdal2-python/bin:{hb}/opt/gdal2-python/libexec/bin:' \
                       '{hb}/opt/qt5/bin:{hb}/opt/qt5-webkit/bin:' \
                       '{hb}/bin:{hb}/sbin:' + os.environ['PATH']
-    options['PYTHONPATH'] = '{hb}/opt/gdal2/lib/python{pv}/site-packages:' \
+    options['PYTHONPATH'] = '{hb}/opt/gdal2-python/lib/python{pv}/site-packages:' \
                             '{hb}/lib/python{pv}/site-packages'
     options['GDAL_DRIVER_PATH'] = '{hb}/lib/gdalplugins'
     options['GDAL_DATA'] = '{hb}/opt/gdal2/share/gdal'
@@ -193,10 +194,11 @@ def main():
 
     # override vars that need to prepend existing vars
     evars['PATH'] = '{hb}/opt/gdal2/bin:' \
+                    '{hb}/opt/gdal2-python/bin:{hb}/opt/gdal2-python/libexec/bin:' \
                     '{hb}/opt/qt5/bin:{hb}/opt/qt5-webkit/bin:' \
                     '{hb}/bin:{hb}/sbin:$PATH'.format(hb=hb)
     evars['PYTHONPATH'] = \
-        '{hb}/opt/gdal2/lib/python{pv}/site-packages:' \
+        '{hb}/opt/gdal2-python/lib/python{pv}/site-packages:' \
         '{hb}/lib/python{pv}/site-packages:$PYTHONPATH'.format(hb=hb, pv=PY_VER)
 
     if os.path.exists(wrp_scr):

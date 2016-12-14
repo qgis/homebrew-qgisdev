@@ -52,8 +52,8 @@ fi
 PY_VER=$(python3 -c "import sys;print('{0}.{1}'.format(sys.version_info[0],sys.version_info[1]).strip())")
 
 # set up environment
-export PATH=${HB}/opt/gdal2/bin:${HB}/bin:${HB}/sbin:${PATH}
-export PYTHONPATH=${HB}/opt/gdal2/lib/python${PY_VER}/site-packages:${HB}/lib/python${PY_VER}/site-packages:${PYTHONPATH}
+export PATH=${HB}/opt/gdal2/bin:${HB}/opt/gdal2-python/bin:${HB}/opt/gdal2-python/libexec/bin:${HB}/bin:${HB}/sbin:${PATH}
+export PYTHONPATH=${HB}/opt/gdal2-python/lib/python${PY_VER}/site-packages:${HB}/lib/python${PY_VER}/site-packages:${PYTHONPATH}
 
 echo "PATH set to: ${PATH}"
 echo "PYTHONPATH set to: ${PYTHONPATH}"
