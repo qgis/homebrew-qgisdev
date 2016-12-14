@@ -92,7 +92,7 @@ Other Python packages **automatically installed** by Homebrew from QGIS dependen
 * [PyQt5](https://github.com/Homebrew/homebrew-core/blob/master/Formula/pyqt5.rb)
 * [QScintilla2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/qscintilla2.rb)
 * [pyspatialite](https://github.com/OSGeo/homebrew-osgeo4mac/blob/master/Formula/pyspatialite.rb) (deprecated)
-* [`osgeo.gdal` and `osgeo.ogr`, etc.](https://github.com/OSGeo/homebrew-osgeo4mac/blob/master/Formula/gdal2.rb)
+* [`osgeo.gdal` and `osgeo.ogr`, etc.](https://github.com/OSGeo/homebrew-osgeo4mac/blob/master/Formula/gdal2-python.rb)
 
 ## Install Build and Linked Library Dependencies
 
@@ -207,12 +207,16 @@ brew unlink pyqt
 # Install and verify GDAL/OGR with decent driver support
 # Do NOT install `gdal` (1.11.x) formula, unless you truely need it otherwise
 # NOTE: keg-only, e.g. only available from HOMEBREW_PREFIX/opt/gdal2 prefix
-brew install osgeo/osgeo4mac/gdal2 --with-complete --with-libkml --with-python3
+brew install osgeo/osgeo4mac/gdal2 --with-complete --with-libkml
 brew test osgeo/osgeo4mac/gdal2
 
 # If failure, review any .dylib errors when loading drivers (scroll to top of output)
 $HOMEBREW_PREFIX/opt/gdal2/bin/gdalinfo --formats
 $HOMEBREW_PREFIX/opt/gdal2/bin/ogrinfo --formats
+
+# Add the Python 3 bindings for GDAL/OGR
+brew install osgeo/osgeo4mac/gdal2-python --with-python3
+brew test osgeo/osgeo4mac/gdal2-python
 
 # Optionally add and verify Processing framework extra utilities
 brew install osgeo/osgeo4mac/grass7
