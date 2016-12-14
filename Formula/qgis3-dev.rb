@@ -66,7 +66,7 @@ class Qgis3Dev < Formula
   depends_on "qca"
   depends_on "qscintilla2"
   depends_on "qwt"
-  depends_on "osgeo/osgeo4mac/qwtpolar"
+  depends_on "qwtpolar"
   depends_on "gsl"
   depends_on "sqlite" # keg_only
   depends_on "expat" # keg_only
