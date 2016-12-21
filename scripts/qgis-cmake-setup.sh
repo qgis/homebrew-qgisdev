@@ -24,7 +24,7 @@ set -e
 
 usage(){
   echo "usage: <script> 'source directory' 'build directory' 'install directory'"
-  echo "       (directories need to absolute paths)"
+  echo "       (directories must exist and be provided as absolute paths)"
   exit 1
 }
 
@@ -48,9 +48,8 @@ if ! [[ "$INSTALL_DIR" = /* ]] || ! [ -d "$INSTALL_DIR" ]; then
   usage
 fi
 
-CMAKE=$(which cmake)
-if [ -z $CMAKE ]; then
-  echo "CMake executable 'cmake' not found"
+if ! (which -s cmake); then
+  echo "CMake executable 'cmake' not found in \$PATH"
   exit 1
 fi
 
@@ -79,8 +78,18 @@ rm -Rf $BUILD_DIR/*
 
 cd $BUILD_DIR
 
+if (which -s ninja); then
+  CMAKE_GENERATOR='Ninja'
+else
+  CMAKE_GENERATOR='Unix\ Makefiles'
+fi
+
+echo "CMake generator: ${CMAKE_GENERATOR}"
+
 # cmake options
-cmd="${CMAKE} -G Ninja"
+cmd="cmake"
+
+cmd+=" -G ${CMAKE_GENERATOR}"
 cmd+=" -DCMAKE_INSTALL_PREFIX:PATH='${INSTALL_DIR}'"
 cmd+=" -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo"
 cmd+=" -DCMAKE_FIND_FRAMEWORK:STRING=LAST"
