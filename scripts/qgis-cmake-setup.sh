@@ -81,7 +81,7 @@ cd $BUILD_DIR
 if (which -s ninja); then
   CMAKE_GENERATOR='Ninja'
 else
-  CMAKE_GENERATOR='Unix\ Makefiles'
+  CMAKE_GENERATOR='Unix Makefiles'
 fi
 
 echo "CMake generator: ${CMAKE_GENERATOR}"
@@ -89,23 +89,49 @@ echo "CMake generator: ${CMAKE_GENERATOR}"
 # cmake options
 cmd="cmake"
 
-cmd+=" -G ${CMAKE_GENERATOR}"
+cmd+=" -G '${CMAKE_GENERATOR}'"
 cmd+=" -DCMAKE_INSTALL_PREFIX:PATH='${INSTALL_DIR}'"
 cmd+=" -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo"
 cmd+=" -DCMAKE_FIND_FRAMEWORK:STRING=LAST"
-cmd+=" -DCMAKE_PREFIX_PATH:STRING='$HB/opt/qt5;$HB/opt/qt5-webkit;"\
-"$HB/opt/gdal2;$HB/opt/expat;$HB/opt/sqlite;$HB/opt/flex;$HB/opt/bison'"
+
+# force looking in HB/opt paths first, so headers in HB/include are not found first
+prefixes="qt5
+qt5-webkit
+qscintilla2
+qwt
+qwtpolar
+qca
+gdal2
+gsl
+geos
+proj
+libspatialite
+spatialindex
+fcgi
+expat
+sqlite
+flex
+bison"
+
+full_prefixes=""
+for p in ${prefixes}; do
+  full_prefixes+="$HB/opt/${p};"
+done
+cmd+=" -DCMAKE_PREFIX_PATH:STRING='${full_prefixes}'"
 
 # testing options
 cmd+=" -DENABLE_MODELTEST:BOOL=FALSE"
 cmd+=" -DENABLE_TESTS:BOOL=TRUE"
 
 # dependency options
+# prefer opt_prefix for CMake modules that find versioned prefix by default
+# this keeps non-critical dependency upgrades from breaking QGIS linking
 cmd+=" -DGDAL_LIBRARY:FILEPATH=$HB/opt/gdal2/lib/libgdal.dylib"
 cmd+=" -DGEOS_LIBRARY:FILEPATH=$HB/opt/geos/lib/libgeos_c.dylib"
 cmd+=" -DGSL_CONFIG:FILEPATH=$HB/opt/gsl/bin/gsl-config"
 cmd+=" -DGSL_INCLUDE_DIR:PATH=$HB/opt/gsl/include"
 cmd+=" -DGSL_LIBRARIES:STRING='-L$HB/opt/gsl/lib -lgsl -lgslcblas'"
+
 cmd+=" -DWITH_QWTPOLAR:BOOL=TRUE"
 cmd+=" -DWITH_INTERNAL_QWTPOLAR:BOOL=FALSE"
 
@@ -127,8 +153,8 @@ cmd+=" -DWITH_SERVER:BOOL=TRUE"
 cmd+=" -DWITH_STAGED_PLUGINS:BOOL=TRUE"
 
 # macOS options
-# cmd+=" -DQGIS_MACAPP_DEV_PREFIX:PATH="$BUILD_DIR/qgis-dev""
-# cmd+=" -DQGIS_MACAPP_INSTALL_DEV:BOOL=TRUE"
+cmd+=" -DQGIS_MACAPP_DEV_PREFIX:PATH="$INSTALL_DIR/qgis-dev""
+cmd+=" -DQGIS_MACAPP_INSTALL_DEV:BOOL=TRUE"
 cmd+=" -DQGIS_MACAPP_BUNDLE:STRING=0"
 
 # cmd+=" -Wno-dev"
@@ -161,6 +187,7 @@ cmd+=" -DQGIS_MACAPP_BUNDLE:STRING=0"
 
 cmd+=" '${SRC_DIR}'"
 
-#echo $cmd
+echo "${cmd}"
+
 eval $cmd
 
