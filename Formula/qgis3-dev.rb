@@ -127,6 +127,20 @@ class Qgis3Dev < Formula
   # end
 
   def install
+    ENV["PYTHONHOME"] = nil
+    ENV["PYTHONPATH"] = python_site_packages
+    if ARGV.debug?
+      puts "python_exec: #{python_exec}"
+      puts "py_ver: #{py_ver}"
+      puts "brewed_python?: #{brewed_python?}"
+      puts "python_site_packages: #{python_site_packages}"
+      puts "python_prefix: #{python_prefix}"
+      puts "qgis_python_packages: #{qgis_python_packages}"
+      puts "gdal_python_packages: #{gdal_python_packages}"
+      puts "gdal_python_opt_bin: #{gdal_python_opt_bin}"
+      puts "gdal_opt_bin: #{gdal_opt_bin}"
+    end
+
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
     # so that no time and energy is wasted copying the Qt frameworks into QGIS.
 
