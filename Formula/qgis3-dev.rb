@@ -157,7 +157,8 @@ class Qgis3Dev < Formula
       bison
       fcgi
     ].freeze
-    # Force looking in HB/opt paths first, so headers in HB/include are not found first
+    # Force CMake to search HB/opt paths first, so headers in HB/include are not found instead;
+    # specifically, ensure any gdal v1 includes are not used
     args << "-DCMAKE_PREFIX_PATH=#{cmake_prefixes.map { |f| Formula[f.to_s].opt_prefix }.join(";")}"
 
     dev_fw = lib/name.to_s
@@ -196,7 +197,7 @@ class Qgis3Dev < Formula
       # this is to build the GRASS Plugin, not for Processing plugin support
       grass7 = Formula["grass7"]
       args << "-DGRASS_PREFIX7='#{grass7.opt_prefix}/grass-base'"
-      # So that `libintl.h` can be found
+      # So that `libintl.h` can be found (should not be needed anymore with QGIS 2.99+)
       # ENV.append "CXXFLAGS", "-I'#{Formula["gettext"].opt_include}'"
     end
 
@@ -233,13 +234,13 @@ class Qgis3Dev < Formula
     # end
 
     mkdir "build" do
-      # bbedit = "/usr/local/bin/bbedit"
+      # editor = "/usr/local/bin/bbedit"
       # cmake_config = Pathname("#{Dir.pwd}/#{name}_cmake-config.txt")
       # cmake_config.write ["cmake ..", *args].join(" \\\n")
-      # system bbedit, cmake_config.to_s
+      # system editor, cmake_config.to_s
       # raise
       system "cmake", "..", *args
-      # system bbedit, "CMakeCache.txt"
+      # system editor, "CMakeCache.txt"
       # raise
       system "make"
       system "make", "install"
