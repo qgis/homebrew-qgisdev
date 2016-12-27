@@ -25,6 +25,8 @@ set -e
 usage(){
   echo "usage: <script> 'source directory' 'build directory' 'install directory'"
   echo "       (directories must exist and be provided as absolute paths)"
+  echo ""
+  echo "for ninja build:  export QGIS_NINJA_BUILD=1"
   exit 1
 }
 
@@ -36,15 +38,15 @@ SRC_DIR="${1}"
 BUILD_DIR="${2}"
 INSTALL_DIR="${3}"
 
-if ! [[ "$SRC_DIR" = /* ]] || ! [ -d "$SRC_DIR" ]; then
+if ! [[ "${SRC_DIR}" = /* ]] || ! [ -d "${SRC_DIR}" ]; then
   usage
 fi
 
-if ! [[ "$BUILD_DIR" = /* ]] || ! [ -d "$BUILD_DIR" ]; then
+if ! [[ "${BUILD_DIR}" = /* ]] || ! [ -d "${BUILD_DIR}" ]; then
   usage
 fi
 
-if ! [[ "$INSTALL_DIR" = /* ]] || ! [ -d "$INSTALL_DIR" ]; then
+if ! [[ "${INSTALL_DIR}" = /* ]] || ! [ -d "${INSTALL_DIR}" ]; then
   usage
 fi
 
@@ -57,7 +59,7 @@ fi
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
 
 # if HOMEBREW_PREFIX undefined in env, then set to standard prefix
-if [ -z "$HOMEBREW_PREFIX" ]; then
+if [ -z "${HOMEBREW_PREFIX}" ]; then
   HB=$(brew --prefix)
 else
   HB=$HOMEBREW_PREFIX
@@ -78,7 +80,11 @@ rm -Rf $BUILD_DIR/*
 
 cd $BUILD_DIR
 
-if (which -s ninja); then
+if [ -n "${QGIS_NINJA_BUILD}" ]; then
+  if ! (which -s ninja); then
+    echo "ninja executable not found"
+    exit 1
+  fi
   CMAKE_GENERATOR='Ninja'
 else
   CMAKE_GENERATOR='Unix Makefiles'

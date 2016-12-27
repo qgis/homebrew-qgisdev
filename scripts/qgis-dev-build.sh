@@ -19,7 +19,7 @@ set -e
 
 BUILD_DIR="$1"
 
-if ! [[ "$BUILD_DIR" = /* ]] || ! [ -d "$BUILD_DIR" ]; then
+if ! [[ "${BUILD_DIR}" = /* ]] || ! [ -d "${BUILD_DIR}" ]; then
   echo "usage: <script> 'absolute path to build directory'"
   exit 1
 fi
@@ -37,7 +37,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
 CPUCORES=$(/usr/sbin/sysctl -n hw.ncpu)
 
 # if HOMEBREW_PREFIX undefined in env, then set to standard prefix
-if [ -z "$HOMEBREW_PREFIX" ]; then
+if [ -z "${HOMEBREW_PREFIX}" ]; then
   HB=$(brew --prefix)
 else
   HB=$HOMEBREW_PREFIX

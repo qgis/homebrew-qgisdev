@@ -30,7 +30,7 @@ fi
 
 BUILD_DIR="${1}"
 
-if ! [[ "$BUILD_DIR" = /* ]] || ! [ -d "$BUILD_DIR" ] || ! [ -f "$BUILD_DIR/CmakeCache.txt" ]; then
+if ! [[ "${BUILD_DIR}" = /* ]] || ! [ -d "${BUILD_DIR}" ] || ! [ -f "${BUILD_DIR}/CmakeCache.txt" ]; then
   usage
 fi
 
@@ -42,7 +42,7 @@ fi
 
 INSTALL_DIR=$(cmake -L 2>/dev/null | grep 'CMAKE_INSTALL_PREFIX' | egrep -o '=.*$' | tr -d '=\n')
 
-if ! [[ "$INSTALL_DIR" = /* ]] || ! [ -d "$INSTALL_DIR" ]; then
+if ! [[ "${INSTALL_DIR}" = /* ]] || ! [ -d "${INSTALL_DIR}" ]; then
   echo "CMAKE_INSTALL_PREFIX directory not found"
 fi
 
@@ -56,7 +56,7 @@ QGIS_APP_NAME=QGIS.app
 QGIS="${INSTALL_DIR}/${QGIS_APP_NAME}"
 
 # if HOMEBREW_PREFIX undefined in env, then set to standard prefix
-if [ -z "$HOMEBREW_PREFIX" ]; then
+if [ -z "${HOMEBREW_PREFIX}" ]; then
   HB=$(brew --prefix)
 else
   HB=$HOMEBREW_PREFIX
