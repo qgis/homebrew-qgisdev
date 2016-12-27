@@ -131,16 +131,27 @@ class Qgis3Dev < Formula
     args = std_cmake_args
     args << "-DCMAKE_BUILD_TYPE=RelWithDebInfo" if build.with? "debug" # override
 
-    prefixes = %W[
-      #{Formula["qt5"].opt_prefix}
-      #{Formula["qt5-webkit"].opt_prefix}
-      #{Formula["gdal2"].opt_prefix}
-      #{Formula["expat"].opt_prefix}
-      #{Formula["sqlite"].opt_prefix}
-      #{Formula["flex"].opt_prefix}
-      #{Formula["bison"].opt_prefix}
-    ]
-    args << "-DCMAKE_PREFIX_PATH=#{prefixes.join(";")}"
+    cmake_prefixes = %w[
+      qt5
+      qt5-webkit
+      qscintilla2
+      qwt
+      qwtpolar
+      qca
+      gdal2
+      gsl
+      geos
+      proj
+      libspatialite
+      spatialindex
+      expat
+      sqlite
+      flex
+      bison
+      fcgi
+    ].freeze
+    # Force looking in HB/opt paths first, so headers in HB/include are not found first
+    args << "-DCMAKE_PREFIX_PATH=#{cmake_prefixes.map { |f| Formula[f.to_s].opt_prefix }.join(";")}"
 
     dev_fw = lib/name.to_s
     dev_fw.mkpath
@@ -169,24 +180,7 @@ class Qgis3Dev < Formula
     args << "-DGSL_INCLUDE_DIR=#{Formula["gsl"].opt_include}"
     args << "-DGSL_LIBRARIES='-L#{Formula["gsl"].opt_lib} -lgsl -lgslcblas'"
 
-    # These specific includes help ensure any gdal v1 includes are not
-    # accidentally pulled from /usr/local/include
-    # In CMakeLists.txt throughout QGIS source tree these includes may come
-    # before opt/gdal2/include; 'fixing' many CMakeLists.txt may be unwise
-    args << "-DGEOS_INCLUDE_DIR=#{Formula["geos"].opt_include}"
-    args << "-DGSL_INCLUDE_DIR=#{Formula["gsl"].opt_include}"
-    args << "-DPROJ_INCLUDE_DIR=#{Formula["proj"].opt_include}"
-    args << "-DQCA_INCLUDE_DIR=#{Formula["qca"].opt_lib}/qca-qt5.framework/Headers"
-    args << "-DSPATIALINDEX_INCLUDE_DIR=#{Formula["spatialindex"].opt_include}/spatialindex"
-    args << "-DSPATIALITE_INCLUDE_DIR=#{Formula["libspatialite"].opt_include}"
-    args << "-DSQLITE3_INCLUDE_DIR=#{Formula["sqlite"].opt_include}"
-
     args << "-DWITH_SERVER=#{build.with?("server") ? "TRUE" : "FALSE"}"
-    if build.with? "server"
-      fcgi_opt = Formula["fcgi"].opt_prefix
-      args << "-DFCGI_INCLUDE_DIR=#{fcgi_opt}/include"
-      args << "-DFCGI_LIBRARY=#{fcgi_opt}/lib/libfcgi.dylib"
-    end
 
     args << "-DPOSTGRES_CONFIG=#{Formula["postgresql"].opt_bin}/pg_config" if build.with? "postgresql"
 
