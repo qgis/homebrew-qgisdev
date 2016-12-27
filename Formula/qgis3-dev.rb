@@ -1,6 +1,6 @@
-class NoQt4Requirement < Requirement
+class Qgis3DevUnlinkedFormulae < Requirement
   fatal true
-  satisfy(:build_env => false) { !qt_linked && !pyqt_linked }
+  satisfy(:build_env => false) { !qt_linked && !pyqt_linked && !txt2tags_linked }
 
   def qt_linked
     Formula["qt"].linked_keg.exist?
@@ -14,11 +14,18 @@ class NoQt4Requirement < Requirement
     return false
   end
 
+  def txt2tags_linked
+    Formula["txt2tags"].linked_keg.exist?
+  rescue
+    return false
+  end
+
   def message
-    s = "Compilation can fail if deprecated Qt4 formulae are installed and linked:\n\n"
+    s = "Compilation can fail if these formulae are installed and linked:\n\n"
 
     s += "Unlink with `brew unlink qt` or remove with `brew uninstall qt`\n" if qt_linked
     s += "Unlink with `brew unlink pyqt` or remove with `brew uninstall pyqt`\n" if pyqt_linked
+    s += "Unlink with `brew unlink txt2tags` or remove with `brew uninstall txt2tags`\n" if txt2tags_linked
     s
   end
 end
@@ -44,7 +51,7 @@ class Qgis3Dev < Formula
   option "with-qspatialite", "Build QSpatialite Qt database driver"
   option "with-api-docs", "Build the API documentation with Doxygen and Graphviz"
 
-  depends_on NoQt4Requirement
+  depends_on Qgis3DevUnlinkedFormulae
 
   # core qgis
   depends_on "cmake" => :build
