@@ -1,15 +1,15 @@
 class Qgis3DevUnlinkedFormulae < Requirement
   fatal true
-  satisfy(:build_env => false) { !qt_linked && !pyqt_linked && !txt2tags_linked }
+  satisfy(:build_env => false) { !qt4_linked && !pyqt4_linked && !txt2tags_linked }
 
-  def qt_linked
-    Formula["qt"].linked_keg.exist?
+  def qt4_linked
+    (Formula["qt"].linked_keg/"lib/QtCore.framework/Versions/4").exist?
   rescue
     return false
   end
 
-  def pyqt_linked
-    Formula["pyqt"].linked_keg.exist?
+  def pyqt4_linked
+    (Formula["pyqt"].linked_keg/"lib/python2.7/site-packages/PyQt").exist?
   rescue
     return false
   end
@@ -23,8 +23,8 @@ class Qgis3DevUnlinkedFormulae < Requirement
   def message
     s = "Compilation can fail if these formulae are installed and linked:\n\n"
 
-    s += "Unlink with `brew unlink qt` or remove with `brew uninstall qt`\n" if qt_linked
-    s += "Unlink with `brew unlink pyqt` or remove with `brew uninstall pyqt`\n" if pyqt_linked
+    s += "Unlink with `brew unlink qt` or remove with `brew uninstall qt`\n" if qt4_linked
+    s += "Unlink with `brew unlink pyqt` or remove with `brew uninstall pyqt`\n" if pyqt4_linked
     s += "Unlink with `brew unlink txt2tags` or remove with `brew uninstall txt2tags`\n" if txt2tags_linked
     s
   end
