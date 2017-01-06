@@ -410,13 +410,13 @@ After setting up your kit, save and restart QtCreator
 
 * Add Kit combo box -> QGIS Build Kit
 * Build settings -> Edit Build Configuration -> Release with Debug Info
-* Set the directory to ``/Users/timlinux/dev/cpp/QGIS/build-relwithdebinfo`` (or wherever you prefer - you will need to create the dir probably)
+* Set the directory to ``/Users/timlinux/dev/cpp/QGIS/build`` (or wherever you prefer - you will need to create the dir probably)
 
 
 ### Possible errors:
 
 **Problem:**
-/usr/local/Cellar/cmake/3.5.2/share/cmake/Modules/CMakeTestCCompiler.cmake:61: error: The C compiler "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc" is not able to compile a simple test program. It fails with the following output: Change Dir: /Users/timlinux/dev/cpp/QGIS/build-debwithrelinfo/CMakeFiles/CMakeTmp
+/usr/local/Cellar/cmake/3.5.2/share/cmake/Modules/CMakeTestCCompiler.cmake:61: error: The C compiler "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc" is not able to compile a simple test program. It fails with the following output: Change Dir: /Users/timlinux/dev/cpp/QGIS/build/CMakeFiles/CMakeTmp
 
 **Resolution:**
 
@@ -457,7 +457,7 @@ Set your interpreter so add these python paths:
 ```
 ￼
 
-(Adjust these paths if you used a different build dir)
+(Adjust these paths if you used a different install dir)
 
 ```
 QGIS_PREFIX_PATH=/Users/timlinux/dev/cpp/QGIS/build/output/bin/QGIS.app/contents/MacOS;
