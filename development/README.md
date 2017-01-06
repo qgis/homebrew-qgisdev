@@ -462,7 +462,7 @@ Set your interpreter so add these python paths:
 ```
 QGIS_PREFIX_PATH=/Users/timlinux/dev/cpp/QGIS/build/output/bin/QGIS.app/contents/MacOS;
 
-PYTHONPATH=$PYTHONPATH:/Users/timlinux/dev/cpp/QGIS/build/output/python:/Users/timlinux/dev/cpp/QGIS/build/output/python/plugins/:/usr/local/lib/python3.5/site-packages/
+PYTHONPATH=$PYTHONPATH:/Users/timlinux/Applications/QGIS.app/contents/Resources/python:/Users/timlinux/Applications/QGIS.app/contents/Resources/python/plugins/:/usr/local/lib/python3.5/site-packages/
 ```
 
 ###  For tests in PyCharm:
