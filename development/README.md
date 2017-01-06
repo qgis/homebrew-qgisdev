@@ -468,5 +468,5 @@ PYTHONPATH=$PYTHONPATH:/Users/timlinux/dev/cpp/QGIS/build/output/python:/Users/t
 ###  For tests in PyCharm:
 
 ```
-$PYTHONPATH:/Users/timlinux//Applications/QGIS.app/contents/Resources/python:/Applications/QGIS.app/Contents/Resources/python/plugins/
+$PYTHONPATH:/Users/timlinux/Applications/QGIS.app/contents/Resources/python:/Users/timlinux//Applications/QGIS.app/Contents/Resources/python/plugins/
 ```
