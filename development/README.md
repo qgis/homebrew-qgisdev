@@ -286,116 +286,284 @@ $BUILD_SCRIPTS/qgis-dev-install.sh $BUILD_DIR
 
 ## Configure/build/install QGIS in Qt Creator.app
 
-### Install QtCreator 4.0 or better
+These steps assume you are starting from a QGIS source tree clone, having done none of the above in Terminal.app. However, using an existing Terminal-based build is possible, if you assign the existing build directory upon loading your QGIS project.
 
-* Grab the installer from https://www.qt.io/download-open-source/
-* Run the installer. You ONLY need the qt-creator package so disable the Qt5 and don’t install Qt libs (we will use the qt4 installed by brew)
-* Once the installer is run open qt-creator
-* Make a directory in your QGIS source tree called ``build``
-* Open the top level ``CMakeLists.txt`` in QtCreator
+**Important:** This configuration uses ``/usr/local`` as the HOMEBREW_PREFIX, which is the default. Substitute if yours is different. 
 
-### Making a kit
+### Install QtCreator 4.2 or better
 
-You need to modify the desktop kit to use your brew install qt5:
+It is recommended to use Qt Creator >= 4.2.0, as the CMake support much better than previous versions. Newer versions are slated to offer even more CMake integration, so update often.
 
-``Preferences -> build and run -> Qt Versions -> Manual -> Add``
+* Grab _just_ the Qt Creator installer from https://www.qt.io/download-open-source/
+  * Click **View All Downloads** scroll down to Qt Creator section
+* Open the DMG and drag **Qt Creator.app** wherever you like 
+* Open **Qt Creator.app**
 
-Set the executable to :
+### Make a "Build & Run" kit for Homebrew
 
-``/usr/local/bin/qmake``
+Go to ``Preferences -> Build & Run``. All further settings for building a kit are contained in tabs of that Preferences section.
 
-``Preferences -> build and run -> Cmake -> Manual -> Add``
+**Note:** You can click ``Apply`` button, at any time, to apply your settings without closing the dialog. 
+
+#### Define a CMake executable
+
+Under ``CMake`` tab, click ``Add``
 
 * **Name:** Brew CMake
 * **Path:** /usr/local/bin/cmake
 
+#### Optionally define a compiler cache
 
-``Preferences -> build and run -> Kits -> Manual Desktop``
+Generally, the default macOS `clang` compiler is very quick, but subsequent compilations can be accelerated with a compiler cache. QGIS developers often use and have heavily tested ``ccache`` for this purpose:
 
-Press clone to make a copy and in the copy set it up with the following options:
+```sh
+brew install ccache
+```
+
+Compiler symlinks are **not available** in ``/usr/local/bin``, but can be found in:
+
+```sh
+/usr/local/opt/ccache/libexec
+```
+
+Under ``Compilers`` tab...
+
+* Click ``Add -> Clang -> C`` and configure:
+
+  * **Name:** Clang (x86 64bit) - Brew ccache
+  * **Compiler path:** _Paste_ in ``/usr/local/opt/ccache/libexec/clang``
+  * **ABI:** x86, darwin, generic, mach_o, 64bit
+
+* Click ``Add -> Clang -> C++`` and configure:
+
+  * **Name:** Clang (x86 64bit) - Brew ccache
+  * **Compiler path:** _Paste_ in ``/usr/local/opt/ccache/libexec/clang++``
+  * **ABI:** x86, darwin, generic, mach_o, 64bit
+
+**Note:** If you browse to one of the symlinked compiler paths, you will end up with an unwanted "Cellar"-based path.
+
+#### Define a Qt Version
+Under ``Qt Versions``, click ``Add``.
+
+* **Version name:** Brew Qt5
+* **qmake location:** Browse to the executable ``/usr/local/opt/qt5/bin/qmake``
+
+**Note:** Homebrew's Qt5 `qmake` is not currently linked into `HOMEBREW_PREFIX/bin`, though this may change. To check, see if `/usr/local/bin/qmake` exists and is from Homebrew's Qt5. If so, use that path instead; otherwise, continue with next step.
+
+The **qmake** location for `/usr/local/opt/qt5/bin/qmake` will be saved as a versioned "Cellar" path. We need to adjust this to its "opt prefix" alternate path, the one we originally browsed. This keeps incremental Homebrew upgrades of Qt5 packages from breaking our kit in the future.
+
+##### Fix qmake location
+
+* Click ``OK`` for Preferences dialog and **quit** Qt Creator
+* Open this file in a text editor:
+
+  ``~/.config/QtProject/qtcreator/qtversion.xml``
+
+* Find the same versioned "Cellar" ``qmake`` path (associated with the element whose attribute is ``key="QMakePath"``) and change it to:
+
+  ``/usr/local/opt/qt5/bin/qmake``
+
+* Save file and relaunch Qt Creator, then go to:
+
+  ``Preferences -> Build & Run -> Qt Versions``
+
+When you select the ``Brew Qt5`` version, it should now show the "opt prefix" path.
+
+#### Define a kit
+
+Under ``Kits`` tab, click ``Add``, then configure with:
 
 * **Name:** QGIS Build Kit - Qt5
-* **File system name:** Leave blank
-* **Device type:** desktop
-* **Device:** Local PC
-* **Sys root:** Leave blank
-* **Compiler:** Clang (x86_64bin in /usr/bin)
-* **Environment:** click ‘Change …’  and add this to your python path so sip can be found:
+* **File system name:** _blank_
+* **Device type:** Desktop
+* **Device:** Local PC (default for Desktop)
+* **Sysroot:** _blank_
+* **Compiler:** (if using ccache, substitute the compilers you defined)
+  * **C:** Clang (x86_64bin in /usr/bin)
+  * **C++:** Clang (x86_64bin in /usr/bin)
+* **Environment:** click ``Change...``  and add the following variables:
 
-``export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.5/site-packages``
+  ```
+  HOMEBREW_PREFIX=/usr/local
+  PATH=/usr/local/opt/ccache/libexec:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+  ```
 
-**NOTES:**
+  **Notes:**
+  * The kit's Qt5 `bin` dir is always prepended to PATH: `/usr/local/opt/qt5/bin`, but it will be resolved to it's "Cellar" path, e.g. `/usr/local/Cellar/qt5/5.7.1_1/bin`, which is not an issue since it is dynamically prepended.
+  * `HOMEBREW_PREFIX` is used by the custom build and install scripts.
 
-* You may need to adjust the path above if you have a newer python installed
-* Make sure you use Python 3!	
-
-
-* **Debugger:** System LLDB at /Library/Developer/CommandLineTools/usr/bin/lldb
-* **Qt Version:** Qt 5.7.0 (local)
+* **Debugger:** System LLDB at `/Applications/Xcode.app/Contents/Developer/usr/bin/lldb` (or `/usr/bin/lldb`, if using the Command Line Tools)
+* **Qt Version:** Brew Qt5 (which you previously created)
 * **Qt mkspec:** leave blank
-* **CMake Tool:** Brew CMake (which you should have created further up in these notes)
-* **CMake Generator:** CodeBlocks - Unix Makefiles (ninja is not working for me)
-* **CMake Configuration:** Press the ‘Change…’ button and paste this into the box provided:
+* **CMake Tool:** Brew CMake (which you previously created)
+* **CMake Generator:** CodeBlocks - Unix Makefiles
+* **CMake Configuration:** Press the `Change...` button and paste this into the box provided:
 
+  ```
+  CMAKE_CXX_COMPILER:STRING=%{Compiler:Executable}
+  CMAKE_C_COMPILER:STRING=%{Compiler:Executable:C}
+  QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
+  CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
+  CMAKE_FIND_FRAMEWORK:STRING=LAST 
+  CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/qscintilla2;/usr/local/opt/qwt;/usr/local/opt/qwtpolar;/usr/local/opt/qca;/usr/local/opt/gdal2;/usr/local/opt/gsl;/usr/local/opt/geos;/usr/local/opt/proj;/usr/local/opt/libspatialite;/usr/local/opt/spatialindex;/usr/local/opt/fcgi;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison'
+  ```
+  
+  **Notes:**
+  * If using `ccache`, you must also define `CMAKE_C_COMPILER` (as above), or Apple's default C compiler will be used.
+  * `CMAKE_PREFIX_PATH` is **critical** as it tells CMake to search _first_ in Homebrew install prefixes that are not linked into the HOMEBREW_PREFIX, e.g. `/usr/local`. Otherwise, CMake can not find them. Often, these packages are important to building QGIS or are newer versions overriding packages already installed on the base macOS.
+  * The `CMAKE_PREFIX_PATH` value can be taken from `$(brew --repository qgis/qgisdev)/scripts/qgis-cmake-setup.sh`. You can comment out the last `eval` line of the aforementioned script to get the equivalent value above.
+  * Do not place QGIS-specific CMake options here. Those should be defined in the CMake section of a specific QGIS source tree when loaded into Qt Creator as a project.
+
+Optionally, once you have your kit defined, you can make it the default by selecting it and clicking the `Make Default` button.
+
+### Load QGIS project
+
+**Note:** This describes loading a CMake project in Qt Creator 4.2 (recommended minimum version). Other versions may vary.
+
+When opening a project, the build directory needs defined. You can set a default build directory templated path in the `General` tab's `Default build directory:` option. If you wish to have the build directory default to _inside_ your project source tree directory, you can use the following template path:
 
 ```
-CMAKE_CXX_COMPILER:STRING=%{Compiler:Executable}
-QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
-CMAKE_INSTALL_PREFIX:PATH='/Users/timlinux/Applications/' 
-CMAKE_FIND_FRAMEWORK:STRING=LAST 
-CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/gdal2;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison' 
-ENABLE_MODELTEST:BOOL=FALSE 
-ENABLE_TESTS:BOOL=TRUE 
-GDAL_LIBRARY:FILEPATH=/usr/local/opt/gdal2/lib/libgdal.dylib 
-GEOS_LIBRARY:FILEPATH=/usr/local/opt/geos/lib/libgeos_c.dylib 
-GSL_CONFIG:FILEPATH=/usr/local/opt/gsl/bin/gsl-config 
-GSL_INCLUDE_DIR:PATH=/usr/local/opt/gsl/include 
-GSL_LIBRARIES:STRING='-L/usr/local/opt/gsl/lib -lgsl -lgslcblas' 
-WITH_QWTPOLAR:BOOL=TRUE 
-WITH_INTERNAL_QWTPOLAR:BOOL=FALSE 
-WITH_GRASS:BOOL=FALSE 
-WITH_GRASS7:BOOL=TRUE 
-GRASS_PREFIX7:PATH=/usr/local/opt/grass7/grass-base 
-WITH_APIDOC:BOOL=FALSE 
-WITH_ASTYLE:BOOL=TRUE 
-WITH_CUSTOM_WIDGETS:BOOL=TRUE 
-WITH_GLOBE:BOOL=FALSE 
-WITH_ORACLE:BOOL=FALSE 
-WITH_QSCIAPI:BOOL=FALSE 
-WITH_QSPATIALITE:BOOL=FALSE 
-WITH_QTWEBKIT:BOOL=TRUE 
-WITH_SERVER:BOOL=TRUE 
-WITH_STAGED_PLUGINS:BOOL=TRUE 
-QGIS_MACAPP_BUNDLE:STRING=0
+%{CurrentProject:Path}/build_%{CurrentBuild:Type}
 ```
 
-**Note:** Most of these settings were taken from $(brew --repository qgis/qgisdev)/scripts/qgis-cmake-setup.sh. You can comment out the last line of the aforementioned script and then just echo the CMD instead of running it to get the equivalent options above.
+The generated build paths based upon this template can still be overridden in the next step. 
 
+Load QGIS project and configure/generate its build files:
+
+* Select `File -> Open File or Project...` menu action
+* Open the `CMakeLists.txt` in the root of your cloned QGIS source tree directory
+* In the resulting `Configure Project` panel:
+
+  * Check only the `QGIS Build Kit - Qt5` you previously created, and uncheck **all** other kits
+  * Click `Details` of your kit to reveal build directory options
+    * Uncheck all options except "Release with Debug Information" (recommended - you can always add other types later as additional build configurations)
+    * If you wish to use the templated directory path, and want to create it now, the easiest way is to copy the path and run `mkdir <path>` in Terminal.app.
+    * If you wish to override the templated build directory path, click `Choose...` (create an empty build folder and select it)
+  * Click `Configure Project`
+
+**Note:** If you did not create the build directory, CMake will _configure_ the project, but not _create_ the build directory or _generate_ the build files until you choose to build the project.
+
+### Configuring QGIS CMake options
+
+**Tip:** You can choose the `Build -> Run CMake` menu action to reconfigure and generate build files for your project at any time. This is helpful for when Qt Creator does not update its GUI and give you the option to do so.
+
+You can configure CMake options for your project in the `Projects` section of the main window, under `Active Project -> Your project` then under `Build & Run -> Your kit -> Build`.
+
+* **Note:** When you `Add` or `Edit` options here, they are stored in `CMakeLists.txt.user` in the root of your QGIS source tree, under the this XML element:
+ 
+  ```
+  <valuelist type="QVariantList" key="CMake.Configuration">
+  ```
+  If you have problems with Qt Creator picking up automatic configuration changes, check the child elements of that `valuelist` to see if there are stored option elements that need deleted (if so, quit Creator first). This is necessary until Qt adds a `Delete` action for CMake options to Creator. Optionally, you can also delete `CMakeLists.txt.user`, though you lose considerably more project configurations.
+
+#### Configure for running from build directory
+
+This will stage the core Python plugins so they are available at runtime from the build directory:
+
+```
+WITH_STAGED_PLUGINS=TRUE   (Add as Boolean)
+```
+
+#### Configure QwtPolar
+
+To avoid building the internal QwtPolar, and use Homebrew's:
+
+```
+WITH_QWTPOLAR=TRUE             (Add as Boolean)
+WITH_INTERNAL_QWTPOLAR=FALSE   (Add as Boolean)
+```
+
+#### Configure for code styling
+
+To ensure the `astyle` binary is built for checking your code with `prepare-commit.sh` script before committing to PR, etc.
+
+```
+WITH_ASTYLE=TRUE   (Add as Boolean)
+```
+
+#### Configure for install
+
+If you intend to install QGIS.app, and not just run it from the build directory:
+
+```
+CMAKE_INSTALL_PREFIX=<directory-path>
+```
+
+This defaults to `/usr/local`, which is probably not what you want. Suggested:
+
+```
+CMAKE_INSTALL_PREFIX=$HOME/Applications/QGIS   (Add as Directory)
+```
+
+Unless you intend to install a fully bundled, standalone `QGIS.app` (not yet supported), then you will want to set:
+
+```
+QGIS_MACAPP_BUNDLE=0   (Add as String)
+```
+
+#### Configure GRASS
+
+If using `osgeo/osgeo4mac/grass7`:
+
+```
+WITH_GRASS7=TRUE                                  (Add as Boolean)
+GRASS_PREFIX7=/usr/local/opt/grass7/grass-base"   (Add as Directory)
+```
+
+#### Fix some CMake module search results
+
+To ensure your build is isolated as much as possible from incidental Homebrew updates, prefer package "opt prefix" paths for CMake modules that find versioned prefix by default:
+
+```
+GDAL_LIBRARY=/usr/local/opt/gdal2/lib/libgdal.dylib        (Add as File)
+GEOS_LIBRARY=/usr/local/opt/geos/lib/libgeos_c.dylib       (Add as File)
+GSL_CONFIG=/usr/local/opt/gsl/bin/gsl-config               (Add as File)
+GSL_INCLUDE_DIR=/usr/local/opt/gsl/include                 (Add as Directory)
+GSL_LIBRARIES='-L/usr/local/opt/gsl/lib -lgsl -lgslcblas'  (Add as String)
+```
+
+# TODO: WIP from here to end
+
+### Building QGIS
+
+TODO: notes on `qgis-set-app-env.py` and `qgis-dev-build.sh`
 
 ### Cleaning the build
 
-If you want to start with a clean setup in QtCreator you should:
+If you want to start with a clean setup in Qt Creator you should:
 
-* close QtCreator
-* remove the CMakeLists.txt.local file at the top of the QGIS source tree
-* restart QtCreator
-* Open the CMakeLists.txt file again
-* Make sure to choose the Qt5 kit (only) as the build kit for the project
-*  - it should pick everything up
+* Quit Qt Creator
+* Remove the `CMakeLists.txt.user` file at the root of the QGIS source tree
+* Optionally, remove the _contents_ of any existing build directory or just its `CMakeCache.txt` file
+* Restart Qt Creator
+* Load project as noted above
 
-### QtCreator Tweaks:
+### Running/debugging QGIS.app from build directory
 
-* Set QGIS code style rules : ``Projects -> Code style -> Import``
-* Open the code style in QGIS/doc folder in QGIS Source Tree.
+You may need to do this:
 
-### Useful QtCreator shortcuts
+	•	add /usr/local/opt/gdal2/bin/ to the raster/gdal tool settings in qgis
+	•	add gdal to your path : export PATH=/usr/local/opt/gdal2/bin/:$PATH
 
-* **Ctlr-K** - pops up quick search for a class
+When debugging / running from Qt-Creator, ensure that GDAL python packages are in your path by adding this to your run environment:
+
+```PYTHONPATH set to $PYTHONPATH:/usr/local/opt/gdal2-python/lib/python3.5/site-packages```
+
+### Installing QGIS.app
+
+### Qt Creator tweaks
+
+* Import QGIS code style rules
+  * Under `Preferences -> C++`, click `Import`
+  * Import `qtcreator_code_style.xml` from `QGIS/doc` folder in QGIS source tree
+  * A "QGIS" code style is imported, which you can assign as the code style for your loaded project (or import just for your project, under `Project Settings` for your project in the `Projects` section of the main window)
+
+### Useful Qt Creator shortcuts
+
+* **Ctrl-K** - pops up quick search for a class
 * **:spacebar** in the search popup will search for symbols
 * **Ctrl-K** - then type 'git blame' and it will give git blame for currently open file
-
-**F2** - jump to symbol / definition under cursor
-
+* **F2** - jump to symbol / definition under cursor
 * **Alt-Enter** - refactoring you can automatically implement stubs for a method in a header
 * **Alt-Enter** - refactoring you can generate getter and setter for a private member in a header
 * **Alt-Enter** - general refactoring
@@ -404,27 +572,14 @@ If you want to start with a clean setup in QtCreator you should:
 * **Cmd-R** - Run w/o debugger
 * **F5** - debug
 
-### Building
-
-After setting up your kit, save and restart QtCreator
-
-* ``File -> Open`` file or project
-* Open the top level CmakeLists.txt in your QGIS checkout dir
-* Now go to the projects tab:
-
-* Add Kit combo box -> QGIS Build Kit
-* Build settings -> Edit Build Configuration -> Release with Debug Info
-* Set the directory to ``/Users/timlinux/dev/cpp/QGIS/build`` (or wherever you prefer - you will need to create the dir probably)
-
-
-### Possible errors:
+### Troubleshooting
 
 **Problem:**
 /usr/local/Cellar/cmake/3.5.2/share/cmake/Modules/CMakeTestCCompiler.cmake:61: error: The C compiler "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc" is not able to compile a simple test program. It fails with the following output: Change Dir: /Users/timlinux/dev/cpp/QGIS/build/CMakeFiles/CMakeTmp
 
 **Resolution:**
 
-Close Qt-Creator, remove CMakeLists.txt.user from your source tree and start again, see if that helps.
+Close Qt Creator, remove CMakeLists.txt.user from your source tree and start again, see if that helps.
 
 **Problem:**
 
@@ -432,20 +587,7 @@ CMAKE CODEBLOCKS GENERATOR not found
 
 **Resolution:**
 
-Manually set this to ‘make’ (or try ninja)
-
-
-### Running QGIS
-
-You may need to do this:
-
-	•	add /usr/local/opt/gdal-20/bin/ to the raster/gdal tool settings in qgis
-	•	add gdal to your path : export PATH=/usr/local/opt/gdal-20/bin/:$PATH
-
-
-When debugging / running from Qt-Creator, ensure that GDAL python packages are in your path by adding this to your run environment:
-
-```PYTHONPATH set to $PYTHONPATH:/usr/local/opt/gdal2-python/lib/python3.5/site-packages```
+Manually set this to 'make' (or try ninja)
 
 ## PyCharm
 
