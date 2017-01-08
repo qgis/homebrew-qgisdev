@@ -290,7 +290,29 @@ $BUILD_SCRIPTS/qgis-dev-install.sh $BUILD_DIR
 * Make a directory in your QGIS source tree called ``build``
 * Open the top level ``CMakeLists.txt`` in QtCreator
 
-### Making a kit
+### Set up a ccache compile profile in QtCreator
+
+CCache will cache previously compiled objects and greatly speed up the compilation process. We will make an alias for compiling c++ sources. Make sure you did ``brew install ccache`` when you were installing your dependencies further up in this document:
+
+``Preferences -> build and run -> compilers``
+
+Select ``Clang (x86 64bit in /usr/bin)`` then press the **clone** button.
+
+Now modify your clone and use the following options:
+
+* **Name:** ``CCache for Clang (x86 64bit in /usr/bin)``
+* **Compiler path:** ``/usr/local/opt/ccache/libexec/clang++``
+
+Leave rest of the options and press OK.
+
+### Set QtCreator to use brew CMake
+
+``Preferences -> build and run -> Cmake -> Manual -> Add``
+
+* **Name:** Brew CMake
+* **Path:** ``/usr/local/bin/cmake``
+
+### Set QtCreator to use bew Qt5's cmake
 
 You need to modify the desktop kit to use your brew install qt5:
 
@@ -300,11 +322,9 @@ Set the executable to :
 
 ``/usr/local/bin/qmake``
 
-``Preferences -> build and run -> Cmake -> Manual -> Add``
+### Making a kit for compiling QGIS
 
-* **Name:** Brew CMake
-* **Path:** /usr/local/bin/cmake
-
+A kit stores the set of compiler, Qt version, environment settings etc. that you want to use to compile a particular system.
 
 ``Preferences -> build and run -> Kits -> Manual Desktop``
 
@@ -315,7 +335,7 @@ Press clone to make a copy and in the copy set it up with the following options:
 * **Device type:** desktop
 * **Device:** Local PC
 * **Sys root:** Leave blank
-* **Compiler:** Clang (x86_64bin in /usr/bin)
+* **Compiler:** Cache for Clang (x86 64bit in /usr/bin)
 * **Environment:** click ‘Change …’  and add this to your python path so sip can be found:
 
 ``export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.5/site-packages``
@@ -329,8 +349,15 @@ Press clone to make a copy and in the copy set it up with the following options:
 * **Debugger:** System LLDB at /Library/Developer/CommandLineTools/usr/bin/lldb
 * **Qt Version:** Qt 5.7.0 (local)
 * **Qt mkspec:** leave blank
+* **Environment:** Set to these (adjust python version if needed)
+
+```
+PATH:$PATH:/usr/local/bin
+PYTHONPATH:$PYTHONPATH:/usr/local/lib/python3.5/site-packages
+```
+
 * **CMake Tool:** Brew CMake (which you should have created further up in these notes)
-* **CMake Generator:** CodeBlocks - Unix Makefiles (ninja is not working for me)
+* **CMake Generator:** CodeBlocks - ninja
 * **CMake Configuration:** Press the ‘Change…’ button and paste this into the box provided:
 
 
@@ -389,9 +416,7 @@ If you want to start with a clean setup in QtCreator you should:
 * **Ctlr-K** - pops up quick search for a class
 * **:spacebar** in the search popup will search for symbols
 * **Ctrl-K** - then type 'git blame' and it will give git blame for currently open file
-
-**F2** - jump to symbol / definition under cursor
-
+* **F2** - jump to symbol / definition under cursor
 * **Alt-Enter** - refactoring you can automatically implement stubs for a method in a header
 * **Alt-Enter** - refactoring you can generate getter and setter for a private member in a header
 * **Alt-Enter** - general refactoring
