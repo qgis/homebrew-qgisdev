@@ -82,6 +82,7 @@ Reference `pip3 --help` for info on usage (usually just `pip install <package>`)
 * [psycopg2](https://pypi.python.org/pypi/psycopg2)
 * [matplotlib](https://pypi.python.org/pypi/matplotlib)
 * [pyparsing](https://pypi.python.org/pypi/pyparsing)
+* [requests](https://pypi.python.org/pypi/requests)
 * [mock](https://pypi.python.org/pypi/mock)
 * [pyyaml](https://pypi.python.org/pypi/PyYAML)
 * [nose2](https://pypi.python.org/pypi/nose2)
@@ -144,7 +145,7 @@ QGIS's build setup uses CMake, which supports 'out-of-source' build directories.
 This tap offers several convenience scripts for use in Qt Creator, or wrapper build scripts, to aid in building/installing QGIS, located at:
 
 ```sh
-$(brew --prefix)/Homebrew/Library/Taps/qgis/homebrew-qgisdev/scripts
+$(brew --repository qgis/qgisdev)/scripts
 ```
 
 > Note: **Copy the directory elsewhere** and use it from there. It's important to not edit the scripts where they are located, in the tap, because it is a git repository. You should keep that working tree clean so that `brew update` always works.
@@ -191,7 +192,7 @@ brew install python3
 
 # Install some Python dependencies
 # NOTE: may require `sudo` if Python 3 is installed in a root-owned location 
-pip3 install future numpy psycopg2 matplotlib pyparsing pyyaml mock nose2
+pip3 install future numpy psycopg2 matplotlib pyparsing requests pyyaml mock nose2
 
 # Add some useful Homebrew taps
 # NOTE: try to avoid tapping homebrew/boneyard
@@ -203,6 +204,9 @@ brew tap osgeo/osgeo4mac
 # Make sure deprecated Qt4 formulae are not linked
 brew unlink qt
 brew unlink pyqt
+
+# Older txt2tags generator for INSTALL doc breakes build and chokes on Python 3
+brew unlink txt2tags
 
 # Install and verify GDAL/OGR with decent driver support
 # Do NOT install `gdal` (1.11.x) formula, unless you truely need it otherwise
