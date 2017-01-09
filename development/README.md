@@ -335,7 +335,7 @@ Press clone to make a copy and in the copy set it up with the following options:
 * **Device type:** desktop
 * **Device:** Local PC
 * **Sys root:** Leave blank
-* **Compiler:** Cache for Clang (x86 64bit in /usr/bin)
+* **Compiler:** CCache for Clang (x86 64bit in /usr/bin)
 * **Environment:** click ‘Change …’  and add this to your python path so sip can be found:
 
 ``export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.6/site-packages``
