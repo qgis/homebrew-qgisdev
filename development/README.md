@@ -292,7 +292,7 @@ $BUILD_SCRIPTS/qgis-dev-install.sh $BUILD_DIR
 
 ### Set up a ccache compile profile in QtCreator
 
-CCache will cache previously compiled objects and greatly speed up the compilation process. We will make an alias for compiling c++ sources. Make sure you did ``brew install ccache`` when you were installing your dependencies further up in this document:
+CCache will cache previously compiled objects and greatly speed up the compilation process. We will make an alias for compiling c++ sources. Make sure you do ``brew install ccache`` so that ccache is installed in your system:
 
 ``Preferences -> build and run -> compilers``
 
