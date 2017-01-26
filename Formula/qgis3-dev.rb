@@ -38,7 +38,7 @@ class Qgis3Dev < Formula
   version "2.99"
 
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
-  option "without-qt-webkit", "Build without webkit based functionality"
+  option "without-qt5-webkit", "Build without webkit based functionality"
   option "without-server", "Build without QGIS Server (qgis_mapserv.fcgi)"
   option "without-postgresql", "Build without current PostgreSQL client"
   option "with-globe", "Build with Globe plugin, based upon osgEarth"
