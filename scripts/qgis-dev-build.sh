@@ -48,6 +48,11 @@ if [ -d $HB/Frameworks/QtCore.framework/Versions/4 ]; then
   exit 1
 fi
 
+if [ -d $HB/var/homebrew/linked/txt2tags/bin ]; then
+  echo 'Unlink txt2tags Homebrew formula: `brew unlink txt2tags`'
+  exit 1
+fi
+
 # get python3 short version (major.minor)
 PY_VER=$(python3 -c "import sys;print('{0}.{1}'.format(sys.version_info[0],sys.version_info[1]).strip())")
 

@@ -67,6 +67,11 @@ if [ -d $HB/Frameworks/QtCore.framework/Versions/4 ]; then
   exit 1
 fi
 
+if [ -d $HB/var/homebrew/linked/txt2tags/bin ]; then
+  echo 'Unlink txt2tags Homebrew formula: `brew unlink txt2tags`'
+  exit 1
+fi
+
 # ensure we can delete previous QGIS.app, then delete it
 if [ -d "${QGIS}" ]; then
   echo "Removing existing QGIS.app..."

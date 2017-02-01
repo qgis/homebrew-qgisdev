@@ -81,7 +81,7 @@ def arg_parser():
             development QGIS.app bundle in the LSEnvironment entity of the app's
             Info.plist. Running on app bundle from build or install directory,
             or whether Kyngchaos.com or Qt development package installers have
-            been used, yeilds different results. QGIS_LOG_FILE is at (unless
+            been used, yields different results. QGIS_LOG_FILE is at (unless
             defined in env var or command option): {0}
             """.format(QGIS_LOG_FILE)
     )

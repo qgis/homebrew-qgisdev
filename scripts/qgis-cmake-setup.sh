@@ -75,6 +75,11 @@ if [ -d $HB/var/homebrew/linked/pyqt/lib/python2.7/site-packages/PyQt4 ]; then
   exit 1
 fi
 
+if [ -d $HB/var/homebrew/linked/txt2tags/bin ]; then
+  echo 'Unlink txt2tags Homebrew formula: `brew unlink txt2tags`'
+  exit 1
+fi
+
 # comment this out if you don't what to clear existing build files
 rm -Rf $BUILD_DIR/*
 
