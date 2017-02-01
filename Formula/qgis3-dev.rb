@@ -38,7 +38,7 @@ class Qgis3Dev < Formula
   version "2.99"
 
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
-  option "without-qt5-webkit", "Build without webkit based functionality"
+  option "without-qt5-webkit-qt@5.7", "Build without webkit based functionality"
   option "without-server", "Build without QGIS Server (qgis_mapserv.fcgi)"
   option "without-postgresql", "Build without current PostgreSQL client"
   option "with-globe", "Build with Globe plugin, based upon osgEarth"
@@ -66,11 +66,11 @@ class Qgis3Dev < Formula
   depends_on "future" => :python3
   depends_on "psycopg2" => :python3
 
-  depends_on "qt5" # keg_only
-  depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
+  depends_on "qt@5.7" # keg_only
+  depends_on "osgeo/osgeo4mac/qt5-webkit-qt@5.7" => :recommended # keg_only
   depends_on "sip" => ["with-python3"]
   depends_on "pyqt5"
-  depends_on "qca"
+  depends_on "qca-qt@5.7"
   depends_on "qscintilla2"
   depends_on "qwt"
   depends_on "qwtpolar"
@@ -153,12 +153,12 @@ class Qgis3Dev < Formula
     args << "-DCMAKE_BUILD_TYPE=RelWithDebInfo" if build.with? "debug" # override
 
     cmake_prefixes = %w[
-      qt5
-      qt5-webkit
+      qt@5.7
+      qt5-webkit-qt@5.7
       qscintilla2
       qwt
       qwtpolar
-      qca
+      qca-qt@5.7
       gdal2
       gsl
       geos
