@@ -429,7 +429,7 @@ class Qgis3Dev < Formula
 
     # check for recommended run-time Python module dependencies
     xm = []
-    %w[matplotlib pyparsing yaml mock nose2].each do |m|
+    %w[matplotlib pyparsing requests yaml mock nose2].each do |m|
       xm << m unless module_importable? m
     end
     unless xm.empty?
