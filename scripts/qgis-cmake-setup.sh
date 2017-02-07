@@ -107,11 +107,11 @@ cmd+=" -DCMAKE_FIND_FRAMEWORK:STRING=LAST"
 
 # force looking in HB/opt paths first, so headers in HB/include are not found first
 prefixes="qt5
-qt5-webkit
+qt5-webkit-qt@5.7
 qscintilla2
 qwt
 qwtpolar
-qca
+qca-qt@5.7
 gdal2
 gsl
 geos

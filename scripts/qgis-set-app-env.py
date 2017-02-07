@@ -50,7 +50,7 @@ def env_vars(ap, hb, qb='', ql=''):
     # will probably generate duplicate paths in PATH
     options['PATH'] = '{hb}/opt/gdal2/bin:' \
                       '{hb}/opt/gdal2-python/bin:{hb}/opt/gdal2-python/libexec/bin:' \
-                      '{hb}/opt/qt5/bin:{hb}/opt/qt5-webkit/bin:' \
+                      '{hb}/opt/qt5/bin:{hb}/opt/qt5-webkit-qt@5.7/bin:' \
                       '{hb}/bin:{hb}/sbin:' + os.environ['PATH']
     options['PYTHONPATH'] = '{hb}/opt/gdal2-python/lib/python{pv}/site-packages:' \
                             '{hb}/lib/python{pv}/site-packages'
@@ -195,7 +195,7 @@ def main():
     # override vars that need to prepend existing vars
     evars['PATH'] = '{hb}/opt/gdal2/bin:' \
                     '{hb}/opt/gdal2-python/bin:{hb}/opt/gdal2-python/libexec/bin:' \
-                    '{hb}/opt/qt5/bin:{hb}/opt/qt5-webkit/bin:' \
+                    '{hb}/opt/qt5/bin:{hb}/opt/qt5-webkit-qt@5.7/bin:' \
                     '{hb}/bin:{hb}/sbin:$PATH'.format(hb=hb)
     evars['PYTHONPATH'] = \
         '{hb}/opt/gdal2-python/lib/python{pv}/site-packages:' \
