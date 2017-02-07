@@ -51,6 +51,8 @@ class Qgis3Dev < Formula
   option "with-qspatialite", "Build QSpatialite Qt database driver"
   option "with-api-docs", "Build the API documentation with Doxygen and Graphviz"
 
+  deprecated_option "without-qt5-webkit" => "without-qt5-webkit-qt@5.7"
+
   depends_on Qgis3DevUnlinkedFormulae
 
   # core qgis
