@@ -194,7 +194,7 @@ class Qgis3Dev < Formula
       -DWITH_CUSTOM_WIDGETS=TRUE
     ]
 
-    args << "-DWITH_QTWEBKIT=#{build.with?("qt-webkit") ? "TRUE" : "FALSE"}"
+    args << "-DWITH_QTWEBKIT=#{build.with?("qt5-webkit-qt@5.7") ? "TRUE" : "FALSE"}"
 
     # Prefer opt_prefix for CMake modules that find versioned prefix by default
     # This keeps non-critical dependency upgrades from breaking QGIS linking
