@@ -294,7 +294,29 @@ $BUILD_SCRIPTS/qgis-dev-install.sh $BUILD_DIR
 * Make a directory in your QGIS source tree called ``build``
 * Open the top level ``CMakeLists.txt`` in QtCreator
 
-### Making a kit
+### Set up a ccache compile profile in QtCreator
+
+CCache will cache previously compiled objects and greatly speed up the compilation process. We will make an alias for compiling c++ sources. Make sure you do ``brew install ccache`` so that ccache is installed in your system:
+
+``Preferences -> build and run -> compilers``
+
+Select ``Clang (x86 64bit in /usr/bin)`` then press the **clone** button.
+
+Now modify your clone and use the following options:
+
+* **Name:** ``CCache for Clang (x86 64bit in /usr/bin)``
+* **Compiler path:** ``/usr/local/opt/ccache/libexec/clang++``
+
+Leave rest of the options and press OK.
+
+### Set QtCreator to use brew CMake
+
+``Preferences -> build and run -> Cmake -> Manual -> Add``
+
+* **Name:** Brew CMake
+* **Path:** ``/usr/local/bin/cmake``
+
+### Set QtCreator to use bew Qt5's cmake
 
 You need to modify the desktop kit to use your brew install qt5:
 
@@ -304,11 +326,9 @@ Set the executable to :
 
 ``/usr/local/bin/qmake``
 
-``Preferences -> build and run -> Cmake -> Manual -> Add``
+### Making a kit for compiling QGIS
 
-* **Name:** Brew CMake
-* **Path:** /usr/local/bin/cmake
-
+A kit stores the set of compiler, Qt version, environment settings etc. that you want to use to compile a particular system.
 
 ``Preferences -> build and run -> Kits -> Manual Desktop``
 
@@ -319,10 +339,10 @@ Press clone to make a copy and in the copy set it up with the following options:
 * **Device type:** desktop
 * **Device:** Local PC
 * **Sys root:** Leave blank
-* **Compiler:** Clang (x86_64bin in /usr/bin)
+* **Compiler:** CCache for Clang (x86 64bit in /usr/bin)
 * **Environment:** click ‘Change …’  and add this to your python path so sip can be found:
 
-``export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.5/site-packages``
+``export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.6/site-packages``
 
 **NOTES:**
 
@@ -333,40 +353,45 @@ Press clone to make a copy and in the copy set it up with the following options:
 * **Debugger:** System LLDB at /Library/Developer/CommandLineTools/usr/bin/lldb
 * **Qt Version:** Qt 5.7.0 (local)
 * **Qt mkspec:** leave blank
+* **Environment:** Set to these (adjust python version if needed)
+
+```
+PATH:$PATH:/usr/local/bin
+PYTHONPATH:$PYTHONPATH:/usr/local/lib/python3.6/site-packages
+```
+
 * **CMake Tool:** Brew CMake (which you should have created further up in these notes)
-* **CMake Generator:** CodeBlocks - Unix Makefiles (ninja is not working for me)
+* **CMake Generator:** CodeBlocks - ninja
 * **CMake Configuration:** Press the ‘Change…’ button and paste this into the box provided:
 
 
 ```
 CMAKE_CXX_COMPILER:STRING=%{Compiler:Executable}
-QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
-CMAKE_INSTALL_PREFIX:PATH='/Users/timlinux/Applications/' 
 CMAKE_FIND_FRAMEWORK:STRING=LAST 
-CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/gdal2;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison' 
+CMAKE_INSTALL_PREFIX:PATH='/Users/timlinux/Applications/' 
+CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/qscintilla2;/usr/local/opt/qwt;/usr/local/opt/qwtpolar;/usr/local/opt/qca;/usr/local/opt/gdal2;/usr/local/opt/gsl;/usr/local/opt/geos;/usr/local/opt/proj;/usr/local/opt/libspatialite;/usr/local/opt/spatialindex;/usr/local/opt/fcgi;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison;' 
 ENABLE_MODELTEST:BOOL=FALSE 
 ENABLE_TESTS:BOOL=TRUE 
 GDAL_LIBRARY:FILEPATH=/usr/local/opt/gdal2/lib/libgdal.dylib 
 GEOS_LIBRARY:FILEPATH=/usr/local/opt/geos/lib/libgeos_c.dylib 
+GRASS_PREFIX7:PATH=/usr/local/opt/grass7/grass-base 
 GSL_CONFIG:FILEPATH=/usr/local/opt/gsl/bin/gsl-config 
 GSL_INCLUDE_DIR:PATH=/usr/local/opt/gsl/include 
 GSL_LIBRARIES:STRING='-L/usr/local/opt/gsl/lib -lgsl -lgslcblas' 
-WITH_QWTPOLAR:BOOL=TRUE 
-WITH_INTERNAL_QWTPOLAR:BOOL=FALSE 
-WITH_GRASS:BOOL=FALSE 
-WITH_GRASS7:BOOL=TRUE 
-GRASS_PREFIX7:PATH=/usr/local/opt/grass7/grass-base 
 WITH_APIDOC:BOOL=FALSE 
 WITH_ASTYLE:BOOL=TRUE 
 WITH_CUSTOM_WIDGETS:BOOL=TRUE 
 WITH_GLOBE:BOOL=FALSE 
+WITH_GRASS7:BOOL=TRUE 
+WITH_GRASS:BOOL=FALSE 
+WITH_INTERNAL_QWTPOLAR:BOOL=FALSE 
 WITH_ORACLE:BOOL=FALSE 
 WITH_QSCIAPI:BOOL=FALSE 
 WITH_QSPATIALITE:BOOL=FALSE 
 WITH_QTWEBKIT:BOOL=TRUE 
+WITH_QWTPOLAR:BOOL=TRUE 
 WITH_SERVER:BOOL=TRUE 
 WITH_STAGED_PLUGINS:BOOL=TRUE 
-QGIS_MACAPP_BUNDLE:STRING=0
 ```
 
 **Note:** Most of these settings were taken from $(brew --repository qgis/qgisdev)/scripts/qgis-cmake-setup.sh. You can comment out the last line of the aforementioned script and then just echo the CMD instead of running it to get the equivalent options above.
@@ -393,9 +418,7 @@ If you want to start with a clean setup in QtCreator you should:
 * **Ctlr-K** - pops up quick search for a class
 * **:spacebar** in the search popup will search for symbols
 * **Ctrl-K** - then type 'git blame' and it will give git blame for currently open file
-
-**F2** - jump to symbol / definition under cursor
-
+* **F2** - jump to symbol / definition under cursor
 * **Alt-Enter** - refactoring you can automatically implement stubs for a method in a header
 * **Alt-Enter** - refactoring you can generate getter and setter for a private member in a header
 * **Alt-Enter** - general refactoring
@@ -445,7 +468,7 @@ You may need to do this:
 
 When debugging / running from Qt-Creator, ensure that GDAL python packages are in your path by adding this to your run environment:
 
-```PYTHONPATH set to $PYTHONPATH:/usr/local/opt/gdal2-python/lib/python3.5/site-packages```
+```PYTHONPATH set to $PYTHONPATH:/usr/local/opt/gdal2-python/lib/python3.6/site-packages```
 
 ## PyCharm
 
@@ -455,7 +478,7 @@ When debugging / running from Qt-Creator, ensure that GDAL python packages are i
 Set your interpreter so add these python paths:
 
 ```
-/usr/local/lib/python3.5/site-packages/
+/usr/local/lib/python3.6/site-packages/
 /Users/timlinux/Applications/QGIS.app/Contents/Resources/python/
 /Users/timlinux/Applications/QGIS.app/Contents/Resources/python/plugins
 ```
@@ -466,7 +489,7 @@ Set your interpreter so add these python paths:
 ```
 QGIS_PREFIX_PATH=/Users/timlinux/dev/cpp/QGIS/build/output/bin/QGIS.app/contents/MacOS;
 
-PYTHONPATH=$PYTHONPATH:/Users/timlinux/Applications/QGIS.app/contents/Resources/python:/Users/timlinux/Applications/QGIS.app/contents/Resources/python/plugins/:/usr/local/lib/python3.5/site-packages/
+PYTHONPATH=$PYTHONPATH:/Users/timlinux/Applications/QGIS.app/contents/Resources/python:/Users/timlinux/Applications/QGIS.app/contents/Resources/python/plugins/:/usr/local/lib/python3.6/site-packages/
 ```
 
 ###  For tests in PyCharm:
