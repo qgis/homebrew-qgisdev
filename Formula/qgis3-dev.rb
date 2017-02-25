@@ -129,8 +129,9 @@ class Qgis3Dev < Formula
   # end
 
   def install
-    ENV["PYTHONHOME"] = nil
-    ENV["PYTHONPATH"] = python_site_packages
+    # when gdal2-python.rb loaded, PYTHONPATH gets set to 2.7 site-packages...
+    #   clear it before calling any local python3 functions
+    ENV["PYTHONPATH"] = nil
     if ARGV.debug?
       puts "python_exec: #{python_exec}"
       puts "py_ver: #{py_ver}"
