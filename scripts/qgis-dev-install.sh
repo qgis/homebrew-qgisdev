@@ -94,8 +94,10 @@ if [ -d "${QGIS}" ]; then
   echo "Setting QGIS.app environment variables..."
   $SCRIPT_DIR/qgis-set-app-env.py -p $HB "${QGIS}"
 
-  echo "Setting QGIS Browser.app environment variables..."
-  $SCRIPT_DIR/qgis-set-app-env.py -p $HB "${QGIS}/Contents/MacOS/bin/QGIS Browser.app"
+  if [ -d "${QGIS}/Contents/MacOS/bin/QGIS Browser.app" ]; then
+    echo "Setting QGIS Browser.app environment variables..."
+    $SCRIPT_DIR/qgis-set-app-env.py -p $HB "${QGIS}/Contents/MacOS/bin/QGIS Browser.app"
+  fi
 fi
 
 exit 0
