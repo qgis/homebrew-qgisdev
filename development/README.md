@@ -155,11 +155,11 @@ The scripts will be used when configuring/building/installing the QGIS project i
 ### Open and review scripts
 
 > Note: scripts expect the HOMEBREW_PREFIX environment variable to be set, e.g. in your `.bash_profile`:
-
-  ```sh
-  # after prepending `brew --prefix` to PATH (not needed for default /usr/local Homebrew)
-  export HOMEBREW_PREFIX=$(brew --prefix)
-  ```
+> 
+> ```sh
+# after prepending `brew --prefix` to PATH (not needed for default /usr/local Homebrew)
+export HOMEBREW_PREFIX=$(brew --prefix)
+```
 
 * [qgis-cmake-setup.sh](../scripts/qgis-cmake-setup.sh) - For generating CMake option string for use in Qt Creator (or build scripts) when built off dependencies from this and other taps. Edit CMake options to suit your build needs. Note, the current script usually has CMake options for building QGIS with *most* core options that the current `qgis3-xx` Homebrew formula supports, which may not include things like Oracle support, etc. You will probably want to edit it and (un)comment out such lines for an initial build. 
 
