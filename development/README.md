@@ -616,3 +616,11 @@ PYTHONPATH=$PYTHONPATH:/Users/timlinux/Applications/QGIS.app/contents/Resources/
 ```
 $PYTHONPATH:/Users/timlinux/Applications/QGIS.app/contents/Resources/python:/Users/timlinux//Applications/QGIS.app/Contents/Resources/python/plugins/
 ```
+
+### Commit some changes to QGIS
+
+Before committing your changes to QGIS, you need to run `scripts/prepare-commit.sh`. You need to install some tools first:
+```
+brew install gnu-sed
+pip3 install autopep8
+```
