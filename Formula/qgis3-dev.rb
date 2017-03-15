@@ -178,14 +178,11 @@ class Qgis3Dev < Formula
     # specifically, ensure any gdal v1 includes are not used
     args << "-DCMAKE_PREFIX_PATH=#{cmake_prefixes.map { |f| Formula[f.to_s].opt_prefix }.join(";")}"
 
-    dev_fw = lib/name.to_s
-    dev_fw.mkpath
     args += %W[
       -DENABLE_TESTS=TRUE
       -DENABLE_MODELTEST=TRUE
       -DQGIS_MACAPP_BUNDLE=0
-      -DQGIS_MACAPP_DEV_PREFIX='#{dev_fw}'
-      -DQGIS_MACAPP_INSTALL_DEV=TRUE
+      -DQGIS_MACAPP_INSTALL_DEV=FALSE
       -DWITH_QWTPOLAR=TRUE
       -DWITH_INTERNAL_QWTPOLAR=FALSE
       -DWITH_ASTYLE=FALSE
@@ -422,11 +419,6 @@ class Qgis3Dev < Formula
 
       For standalone Python3 development, set the following environment variable:
         export PYTHONPATH=#{qgis_python_packages}:#{gdal_python_packages}:#{python_site_packages}:$PYTHONPATH
-
-      Developer frameworks are installed in:
-        #{opt_lib}/#{name}
-        NOTE: not symlinked to HOMEBREW_PREFIX/Frameworks, which affects isolation.
-              Use dyld -F option in CPPFLAGS/LDFLAGS when building other software.
 
     EOS
 
