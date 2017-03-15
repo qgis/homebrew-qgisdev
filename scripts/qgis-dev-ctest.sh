@@ -1,9 +1,9 @@
 #!/bin/bash
 ###########################################################################
-# Script for CMake build of QGIS when built off Homebrew dependencies
+# Script for CMake testing build of QGIS when built off Homebrew dependencies
 #                              -------------------
-#        begin    : November 2016
-#        copyright: (C) 2016 Larry Shaffer
+#        begin    : March 2017
+#        copyright: (C) 2017 Larry Shaffer
 #        email    : larrys at dakotacarto dot com
 ###########################################################################
 #                                                                         #
@@ -18,18 +18,19 @@
 set -e
 
 usage(){
-  echo "usage: <script> 'absolute path to build directory'"
-  exit 1
+  echo "usage: <script> 'absolute path to build directory' [\"ctest options\"]"
 }
-
-if [ "$#" -ne 1 ]; then
-  usage
-fi
 
 BUILD_DIR="$1"
 
 if ! [[ "${BUILD_DIR}" = /* ]] || ! [ -d "${BUILD_DIR}" ]; then
   usage
+  exit 1
+fi
+
+CTEST_OPTS=
+if [ "$#" -gt 1 ] && [ -n "$2" ]; then
+  CTEST_OPTS=$2
 fi
 
 # parent directory of script
@@ -37,24 +38,10 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
 
 source ${SCRIPT_DIR}/qgis-dev.env "${BUILD_DIR}"
 
-checkcmake
-checkqt4
-checkpyqt4
-checktxt2tags
+checkctest
 
-echo "Building QGIS..."
+echo "Testing QGIS..."
 cd $BUILD_DIR
-time $CMAKE --build . --target all -- -j${CPUCORES}
-
-# # stage/compile plugins so they are available when running from build directory
-# echo "Staging plugins to QGIS build directory..."
-# $CMAKE --build . --target staged-plugins-pyc
-
-# write LSEnvironment entity to app's Info.plist
-if [ -d "${BUILD_DIR}/output/bin/QGIS.app" ]; then
-  # this differs from LSEnvironment in bundled app; see set-qgis-app-env.py
-  echo "Setting QGIS.app environment variables..."
-  $SCRIPT_DIR/qgis-set-app-env.py -p ${HOMEBREW_PREFIX} -b ${BUILD_DIR} "${BUILD_DIR}/output/bin/QGIS.app"
-fi
+time $CTEST $CTEST_OPTS
 
 exit 0

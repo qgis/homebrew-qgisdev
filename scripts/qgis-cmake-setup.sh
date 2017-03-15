@@ -50,35 +50,16 @@ if ! [[ "${INSTALL_DIR}" = /* ]] || ! [ -d "${INSTALL_DIR}" ]; then
   usage
 fi
 
-if ! (which -s cmake); then
-  echo "CMake executable 'cmake' not found in \$PATH"
-  exit 1
-fi
-
 # parent directory of script
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
 
-# if HOMEBREW_PREFIX undefined in env, then set to standard prefix
-if [ -z "${HOMEBREW_PREFIX}" ]; then
-  HB=$(brew --prefix)
-else
-  HB=$HOMEBREW_PREFIX
-fi
+source ${SCRIPT_DIR}/qgis-dev.env "${BUILD_DIR}"
+HB=${HOMEBREW_PREFIX}
 
-if [ -d $HB/var/homebrew/linked/qt/lib/QtCore.framework/Versions/4 ]; then
-  echo 'Unlink Qt4 Homebrew formula: `brew unlink qt`'
-  exit 1
-fi
-
-if [ -d $HB/var/homebrew/linked/pyqt/lib/python2.7/site-packages/PyQt4 ]; then
-  echo 'Unlink PyQt4 Homebrew formula: `brew unlink pyqt`'
-  exit 1
-fi
-
-if [ -d $HB/var/homebrew/linked/txt2tags/bin ]; then
-  echo 'Unlink txt2tags Homebrew formula: `brew unlink txt2tags`'
-  exit 1
-fi
+checkcmake
+checkqt4
+checkpyqt4
+checktxt2tags
 
 # comment this out if you don't what to clear existing build files
 rm -Rf $BUILD_DIR/*
@@ -98,7 +79,7 @@ fi
 echo "CMake generator: ${CMAKE_GENERATOR}"
 
 # cmake options
-cmd="cmake"
+cmd="${CMAKE}"
 
 cmd+=" -G '${CMAKE_GENERATOR}'"
 cmd+=" -DCMAKE_INSTALL_PREFIX:PATH='${INSTALL_DIR}'"
@@ -107,11 +88,11 @@ cmd+=" -DCMAKE_FIND_FRAMEWORK:STRING=LAST"
 
 # force looking in HB/opt paths first, so headers in HB/include are not found first
 prefixes="qt5
-qt5-webkit-qt@5.7
+qt5-webkit
 qscintilla2
 qwt
 qwtpolar
-qca-qt@5.7
+qca
 gdal2
 gsl
 geos
@@ -164,8 +145,8 @@ cmd+=" -DWITH_SERVER:BOOL=TRUE"
 cmd+=" -DWITH_STAGED_PLUGINS:BOOL=TRUE"
 
 # macOS options
-cmd+=" -DQGIS_MACAPP_DEV_PREFIX:PATH="$INSTALL_DIR/qgis-dev""
-cmd+=" -DQGIS_MACAPP_INSTALL_DEV:BOOL=TRUE"
+#cmd+=" -DQGIS_MACAPP_DEV_PREFIX:PATH="$INSTALL_DIR/qgis-dev""
+#cmd+=" -DQGIS_MACAPP_INSTALL_DEV:BOOL=TRUE"
 cmd+=" -DQGIS_MACAPP_BUNDLE:STRING=0"
 
 # cmd+=" -Wno-dev"

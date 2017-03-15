@@ -34,43 +34,24 @@ if ! [[ "${BUILD_DIR}" = /* ]] || ! [ -d "${BUILD_DIR}" ] || ! [ -f "${BUILD_DIR
   usage
 fi
 
-CMAKE=$(which cmake)
-if [ -z $CMAKE ]; then
-  echo "CMake executable 'cmake' not found"
-  exit 1
-fi
+# parent directory of script
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
 
-INSTALL_DIR=$(cmake -L 2>/dev/null | grep 'CMAKE_INSTALL_PREFIX' | egrep -o '=.*$' | tr -d '=\n')
+source ${SCRIPT_DIR}/qgis-dev.env "${BUILD_DIR}"
+
+checkcmake
+checkqt4
+checkpyqt4
+checktxt2tags
+
+INSTALL_DIR=$(${CMAKE} -L -N "${BUILD_DIR}" 2>/dev/null | grep 'CMAKE_INSTALL_PREFIX' | egrep -o '=.*$' | tr -d '=\n')
 
 if ! [[ "${INSTALL_DIR}" = /* ]] || ! [ -d "${INSTALL_DIR}" ]; then
   echo "CMAKE_INSTALL_PREFIX directory not found"
 fi
 
-# parent directory of script
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)
-
-# use maximum number of available cores
-CPUCORES=$(/usr/sbin/sysctl -n hw.ncpu)
-
 QGIS_APP_NAME=QGIS.app
 QGIS="${INSTALL_DIR}/${QGIS_APP_NAME}"
-
-# if HOMEBREW_PREFIX undefined in env, then set to standard prefix
-if [ -z "${HOMEBREW_PREFIX}" ]; then
-  HB=$(brew --prefix)
-else
-  HB=$HOMEBREW_PREFIX
-fi
-
-if [ -d $HB/Frameworks/QtCore.framework/Versions/4 ]; then
-  echo 'Unlink Qt4 Homebrew formula, e.g. `brew unlink qt`'
-  exit 1
-fi
-
-if [ -d $HB/var/homebrew/linked/txt2tags/bin ]; then
-  echo 'Unlink txt2tags Homebrew formula: `brew unlink txt2tags`'
-  exit 1
-fi
 
 # ensure we can delete previous QGIS.app, then delete it
 if [ -d "${QGIS}" ]; then
@@ -81,7 +62,7 @@ fi
 
 echo "Installing QGIS..."
 cd $BUILD_DIR
-$CMAKE --build . --target install -- -j${CPUCORES}
+${CMAKE} --build . --target install -- -j${CPUCORES}
 
 if [ -d "${QGIS}" ]; then
   # ensure we can write to QGIS.app bundle components
@@ -93,11 +74,6 @@ if [ -d "${QGIS}" ]; then
   # this differs from LSEnvironment in app run from build directory; see qgis-set-app-env.py
   echo "Setting QGIS.app environment variables..."
   $SCRIPT_DIR/qgis-set-app-env.py -p $HB "${QGIS}"
-
-  if [ -d "${QGIS}/Contents/MacOS/bin/QGIS Browser.app" ]; then
-    echo "Setting QGIS Browser.app environment variables..."
-    $SCRIPT_DIR/qgis-set-app-env.py -p $HB "${QGIS}/Contents/MacOS/bin/QGIS Browser.app"
-  fi
 fi
 
 exit 0
