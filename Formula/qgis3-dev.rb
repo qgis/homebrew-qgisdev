@@ -69,6 +69,17 @@ class Qgis3Dev < Formula
   depends_on :python3
   depends_on "future" => :python3
   depends_on "psycopg2" => :python3
+  depends_on "dateutil" => :python3
+  depends_on "httplib2" => :python3
+  depends_on "pytz" => :python3
+  depends_on "six" => :python3
+  depends_on "nose2" => :python3
+  depends_on "pygments" => :python3
+  depends_on "jinja2" => :python3
+  depends_on "yaml" => :python3
+  depends_on "requests" => :python3
+  depends_on "owslib" => :python3
+  depends_on "matplotlib" => :python3
 
   depends_on "qt5" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
@@ -424,9 +435,9 @@ class Qgis3Dev < Formula
 
     EOS
 
-    # check for recommended run-time Python module dependencies
+    # check for recommended dev Python module dependencies
     xm = []
-    %w[matplotlib pyparsing requests yaml mock nose2].each do |m|
+    %w[pyparsing mock nose2].each do |m|
       xm << m unless module_importable? m
     end
     unless xm.empty?
@@ -436,7 +447,7 @@ class Qgis3Dev < Formula
 
             #{xm.join(", ")}
 
-        You can install manually, via installer package or with `pip` (if availble):
+        You can install manually, via installer package or with `pip3` (if availble):
 
             pip3 install <module>
         #{Tty.red}
