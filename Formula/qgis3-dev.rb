@@ -37,6 +37,7 @@ class Qgis3Dev < Formula
   url "https://github.com/qgis/QGIS.git", :branch => "master"
   version "2.99"
 
+  option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
   option "without-qt5-webkit", "Build without webkit based functionality"
   option "without-server", "Build without QGIS Server (qgis_mapserv.fcgi)"
@@ -57,6 +58,7 @@ class Qgis3Dev < Formula
 
   # core qgis
   depends_on "cmake" => :build
+  depends_on "ninja" => :build if build.with? "ninja"
   depends_on "bison" => :build
   depends_on "flex" => :build
   if build.with? "api-docs"
@@ -253,11 +255,11 @@ class Qgis3Dev < Formula
       # cmake_config.write ["cmake ..", *args].join(" \\\n")
       # system editor, cmake_config.to_s
       # raise
-      system "cmake", "..", *args
+      system "cmake", "-G", build.with?("ninja") ? "Ninja" : "Unix Makefiles", *args, ".."
       # system editor, "CMakeCache.txt"
       # raise
-      system "make"
-      system "make", "install"
+      system "cmake", "--build", ".", "--target", "all", "--", "-j", Hardware::CPU.cores
+      system "cmake", "--build", ".", "--target", "install", "--", "-j", Hardware::CPU.cores
     end
 
     # Update .app's bundle identifier, so other installers doesn't get confused
