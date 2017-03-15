@@ -192,6 +192,7 @@ class Qgis3Dev < Formula
     args << "-DCMAKE_PREFIX_PATH=#{cmake_prefixes.map { |f| Formula[f.to_s].opt_prefix }.join(";")}"
 
     args += %W[
+      -DENABLE_PYTHON3=TRUE
       -DENABLE_TESTS=TRUE
       -DENABLE_MODELTEST=TRUE
       -DQGIS_MACAPP_BUNDLE=0
