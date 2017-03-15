@@ -105,7 +105,7 @@ class Qgis3Dev < Formula
   # TODO: add MSSQL third-party support formula?, :optional
 
   # core plugins (c++ and python)
-  if build.with? "grass"
+  if build.with?("grass") || Formula["grass7"].opt_prefix.exist?
     depends_on "osgeo/osgeo4mac/grass7"
     depends_on "gettext" # keg_only
   end
@@ -224,8 +224,10 @@ class Qgis3Dev < Formula
       # this is to build the GRASS Plugin, not for Processing plugin support
       grass7 = Formula["grass7"]
       args << "-DGRASS_PREFIX7='#{grass7.opt_prefix}/grass-base'"
-      # So that `libintl.h` can be found (should not be needed anymore with QGIS 2.99+)
-      # ENV.append "CXXFLAGS", "-I'#{Formula["gettext"].opt_include}'"
+      # Keep superenv from stripping (use Cellar prefix)
+      ENV.append "CXXFLAGS", "-isystem #{grass7.prefix.resolved_path}/grass-base/include"
+      # So that `libintl.h` can be found (use Cellar prefix; should not be needed anymore with QGIS 2.99+)
+      # ENV.append "CXXFLAGS", "-isystem #{Formula["gettext"].include.resolved_path}"
     end
 
     args << "-DWITH_GLOBE=#{build.with?("globe") ? "TRUE" : "FALSE"}"
