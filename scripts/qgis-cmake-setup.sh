@@ -62,7 +62,7 @@ checkpyqt4
 checktxt2tags
 
 # comment this out if you don't what to clear existing build files
-rm -Rf $BUILD_DIR/*
+#rm -Rf $BUILD_DIR/*
 
 cd $BUILD_DIR
 
