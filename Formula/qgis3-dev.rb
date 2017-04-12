@@ -86,6 +86,7 @@ class Qgis3Dev < Formula
   depends_on "sip" => ["with-python3"]
   depends_on "pyqt"
   depends_on "qca"
+  depends_on "qtkeychain"
   depends_on "qscintilla2"
   depends_on "qwt"
   depends_on "qwtpolar"
