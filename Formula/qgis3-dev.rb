@@ -32,7 +32,7 @@ end
 
 class Qgis3Dev < Formula
   desc "User friendly open source Geographic Information System"
-  homepage "http://www.qgis.org"
+  homepage "https://www.qgis.org"
 
   url "https://github.com/qgis/QGIS.git", :branch => "master"
   version "2.99"
@@ -81,10 +81,10 @@ class Qgis3Dev < Formula
   depends_on "owslib" => :python3
   depends_on "matplotlib" => :python3
 
-  depends_on "qt5" # keg_only
+  depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
   depends_on "sip" => ["with-python3"]
-  depends_on "pyqt5"
+  depends_on "pyqt"
   depends_on "qca"
   depends_on "qscintilla2"
   depends_on "qwt"
@@ -191,7 +191,7 @@ class Qgis3Dev < Formula
     # specifically, ensure any gdal v1 includes are not used
     args << "-DCMAKE_PREFIX_PATH=#{cmake_prefixes.map { |f| Formula[f.to_s].opt_prefix }.join(";")}"
 
-    args += %W[
+    args += %w[
       -DENABLE_PYTHON3=TRUE
       -DENABLE_TESTS=TRUE
       -DENABLE_MODELTEST=TRUE
