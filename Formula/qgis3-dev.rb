@@ -130,7 +130,7 @@ class Qgis3Dev < Formula
   # see `grass` above
   depends_on "osgeo/osgeo4mac/orfeo5" => :optional
   depends_on "homebrew/science/r" => :optional
-  depends_on "osgeo/osgeo4mac/saga-gis" => :optional
+  depends_on "osgeo/osgeo4mac/saga-gis-lts" => :optional
   # TODO: LASTools straight build (2 reporting tools), or via `wine` (10 tools)
   # TODO: Fusion from USFS (via `wine`?)
 
