@@ -141,6 +141,14 @@ class Qgis3Dev < Formula
   #   sha256 "385dce925fc2d29f05afd6508bc1f46ec84c0bc607cc0c8dfce78a4bb93b9c4e"
   #   version "2.14.0"
   # end
+  
+  # Python dependencies
+
+  depends_on "future" => :python3
+  depends_on "psycopg2" => :python3
+  depends_on "numpy" => :python3
+  
+
 
   def install
     # when gdal2-python.rb loaded, PYTHONPATH gets set to 2.7 site-packages...
