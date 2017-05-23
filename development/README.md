@@ -219,7 +219,7 @@ $HOMEBREW_PREFIX/opt/gdal2/bin/gdalinfo --formats
 $HOMEBREW_PREFIX/opt/gdal2/bin/ogrinfo --formats
 
 # Add the Python 3 bindings for GDAL/OGR
-brew install osgeo/osgeo4mac/gdal2-python --with-python3
+brew install osgeo/osgeo4mac/gdal2-python --with-python3 --without-python
 brew test osgeo/osgeo4mac/gdal2-python
 
 # Optionally add and verify Processing framework extra utilities
