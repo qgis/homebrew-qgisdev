@@ -401,7 +401,6 @@ Under ``Kits`` tab, click ``Add``, then configure with:
 
   ```
   CMAKE_CXX_COMPILER:STRING=%{Compiler:Executable}
-  CMAKE_C_COMPILER:STRING=%{Compiler:Executable:C}
   QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
   CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
   CMAKE_FIND_FRAMEWORK:STRING=LAST 
