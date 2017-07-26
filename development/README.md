@@ -597,6 +597,28 @@ CMAKE CODEBLOCKS GENERATOR not found
 
 Manually set this to 'make' (or try ninja)
 
+**Problem:**
+
+Running `scripts/sip_include.sh` give error message like this:
+```
+Creating python/core/core_auto.sip
+./scripts/sip_include.sh: line 50: QGIS_${module^^}_${source}: bad substitution
+Creating python/gui/gui_auto.sip
+./scripts/sip_include.sh: line 50: QGIS_${module^^}_${source}: bad substitution
+Creating python/analysis/analysis_auto.sip
+./scripts/sip_include.sh: line 50: QGIS_${module^^}_${source}: bad substitution
+Creating python/server/server_auto.sip
+./scripts/sip_include.sh: line 50: QGIS_${module^^}_${source}: bad substitution
+```
+
+**Resolution:**
+
+You need to run the script with bash version 4+, but MacOS is shipped with 
+bash version 3.2.x. To update it run:
+ ```
+ brew install -U bash
+ ```
+
 ## Configure/build/install QGIS in CLion
 
 [CLion](https://www.jetbrains.com/clion/) is a cross platform C++ IDE developed by JetBrains. Usage generally requires purchasing a commercial license, though they do provide free licenses for Open Source projects (subject to some criteria).
