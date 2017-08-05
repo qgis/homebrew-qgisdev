@@ -98,6 +98,7 @@ class Qgis3Dev < Formula
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
+  depends_on "libzip"
 
   # core providers
   depends_on "osgeo/osgeo4mac/gdal2" # keg_only
