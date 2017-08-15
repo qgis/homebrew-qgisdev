@@ -107,7 +107,7 @@ class Qgis3Dev < Formula
   # TODO: add MSSQL third-party support formula?, :optional
 
   # core plugins (c++ and python)
-  if build.with?("grass") || Formula["grass7"].opt_prefix.exist?
+  if build.with?("grass") || (HOMEBREW_PREFIX/"opt/grass7").exist?
     depends_on "osgeo/osgeo4mac/grass7"
     depends_on "gettext" # keg_only
   end
