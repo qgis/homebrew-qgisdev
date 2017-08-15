@@ -62,11 +62,14 @@ class Qgis3Dev < Formula
   depends_on "bison" => :build
   depends_on "flex" => :build
   if build.with? "api-docs"
-    depends_on "graphviz" => [:build, "with-freetype"]
-    depends_on "doxygen" => [:build, "with-dot"] # with graphviz support
+    depends_on "graphviz"
+    depends_on "doxygen"
   end
 
   depends_on :python3
+
+  # TODO: move this to vendored pip3 install:
+  #       system {"PYTHONUSERBASE" => libexec}, HOMEBREW_PREFIX/"bin/pip3", "install", "--user", "<pkg>"
   depends_on "future" => :python3
   depends_on "psycopg2" => :python3
   depends_on "dateutil" => :python3
@@ -130,7 +133,7 @@ class Qgis3Dev < Formula
   # core processing plugin extras
   # see `grass` above
   depends_on "osgeo/osgeo4mac/orfeo5" => :optional
-  depends_on "homebrew/science/r" => :optional
+  depends_on "r" => :optional
   depends_on "osgeo/osgeo4mac/saga-gis-lts" => :optional
   # TODO: LASTools straight build (2 reporting tools), or via `wine` (10 tools)
   # TODO: Fusion from USFS (via `wine`?)
@@ -358,8 +361,9 @@ class Qgis3Dev < Formula
         inreplace app/"#{proc_algs}/grass7/Grass7Utils.py",
                   "/Applications/GRASS-7.0.app/Contents/MacOS",
                   "#{grass7.opt_prefix}/grass-base"
+        puts "GRASS 7 GrassUtils.py has been updated"
       rescue Utils::InreplaceError
-        puts "GRASS 7 GrassUtils already updated"
+        puts "GRASS 7 GrassUtils.py already updated"
       end
     end
 
