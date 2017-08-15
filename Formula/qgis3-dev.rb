@@ -273,6 +273,9 @@ class Qgis3Dev < Formula
     #   ENV.append "CXX_EXTRA_FLAGS", "-Wno-inconsistent-missing-override"
     # end
 
+    # nix clang tidy runs
+    args << "-DCLANG_TIDY_EXE="
+
     mkdir "build" do
       # editor = "/usr/local/bin/bbedit"
       # cmake_config = Pathname("#{Dir.pwd}/#{name}_cmake-config.txt")
