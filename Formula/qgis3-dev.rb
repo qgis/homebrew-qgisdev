@@ -192,6 +192,7 @@ class Qgis3Dev < Formula
       spatialindex
       expat
       sqlite
+      libzip
       flex
       bison
       fcgi
