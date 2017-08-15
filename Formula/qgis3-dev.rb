@@ -118,7 +118,7 @@ class Qgis3Dev < Formula
   # Not until osgearth is Qt5-ready
   # if build.with? "globe"
   #   # this is pretty borked with OS X >= 10.10+
-  #   depends on "open-scene-graph" => ["with-qt5"]
+  #   depends on "open-scene-graph"
   #   depends on "homebrew/science/osgearth"
   # end
 
@@ -169,10 +169,23 @@ class Qgis3Dev < Formula
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
     # so that no time and energy is wasted copying the Qt frameworks into QGIS.
 
-    # Install custom widgets Designer plugin to prefix
-    mkdir lib/"qt5/plugins/designer"
+    # Install custom widgets Designer plugin to local qt plugins prefix
+    mkdir lib/"qt/plugins/designer"
     inreplace "src/customwidgets/CMakeLists.txt",
-              "${QT_PLUGINS_DIR}/designer", lib/"qt5/plugins/designer".to_s
+              "${QT_PLUGINS_DIR}/designer", lib/"qt/plugins/designer".to_s
+
+    # Fix custom widgets designer module install path
+    # TODO: add for QtWebkit bindings
+    mkdir lib/"python#{py_ver}/site-packages/PyQt5"
+    inreplace "CMakeLists.txt",
+              "${PYQT5_MOD_DIR}", lib/"python#{py_ver}/site-packages/PyQt5".to_s
+
+    # Install qspatialite db plugin to local qt plugins prefix
+    if build.with? "qspatialite"
+      mkdir lib/"qt/plugins/sqldrivers"
+      inreplace "src/providers/spatialite/qspatialite/CMakeLists.txt",
+                "${QT_PLUGINS_DIR}/sqldrivers", lib/"qt/plugins/sqldrivers".to_s
+    end
 
     args = std_cmake_args
     args << "-DCMAKE_BUILD_TYPE=RelWithDebInfo" if build.with? "debug" # override
