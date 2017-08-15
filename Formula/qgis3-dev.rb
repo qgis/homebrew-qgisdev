@@ -146,7 +146,11 @@ class Qgis3Dev < Formula
   #   version "2.14.0"
   # end
 
+  needs :cxx11
+
   def install
+    ENV.cxx11
+
     # when gdal2-python.rb loaded, PYTHONPATH gets set to 2.7 site-packages...
     #   clear it before calling any local python3 functions
     ENV["PYTHONPATH"] = nil
