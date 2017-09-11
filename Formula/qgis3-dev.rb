@@ -40,6 +40,7 @@ class Qgis3Dev < Formula
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
   option "without-qt5-webkit", "Build without webkit based functionality"
+  option "without-pyqt5-webkit", "Build without webkit python bindings"
   option "without-server", "Build without QGIS Server (qgis_mapserv.fcgi)"
   option "without-postgresql", "Build without current PostgreSQL client"
   option "with-globe", "Build with Globe plugin, based upon osgEarth"
@@ -70,6 +71,7 @@ class Qgis3Dev < Formula
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
   depends_on "sip"
   depends_on "pyqt"
+  depends_on "osgeo/osgeo4mac/pyqt5-webkit" => :recommended
   depends_on "qca"
   depends_on "qtkeychain"
   depends_on "qscintilla2"
