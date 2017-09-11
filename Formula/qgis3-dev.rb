@@ -311,6 +311,24 @@ class Qgis3Dev < Formula
       system "cmake", "--build", ".", "--target", "install", "--", "-j", Hardware::CPU.cores
     end
 
+    # Fixup some errant lib linking
+    # TODO: fix upstream in CMake
+    dy_libs = [lib_qt4/"plugins/designer/libqgis_customwidgets.dylib"]
+    dy_libs << lib_qt4/"plugins/sqldrivers/libqsqlspatialite.dylib" if build.with? "qspatialite"
+    dy_libs.each do |dy_lib|
+      MachO::Tools.dylibs(dy_lib.to_s).each do |i_n|
+        %w[core gui native].each do |f_n|
+          sufx = i_n[/(qgis_#{f_n}\.framework.*)/, 1]
+          next if sufx.nil?
+          i_n_to = "#{opt_prefix}/QGIS.app/Contents/Frameworks/#{sufx}"
+          puts "Changing install name #{i_n} to #{i_n_to} in #{dy_lib}" if ARGV.debug?
+          dy_lib.ensure_writable do
+            MachO::Tools.change_install_name(dy_lib.to_s, i_n.to_s, i_n_to, :strict => false)
+          end
+        end
+      end
+    end
+
     # Update .app's bundle identifier, so other installers doesn't get confused
     inreplace prefix/"QGIS.app/Contents/Info.plist",
               "org.qgis.qgis3", "org.qgis.qgis3-hb-dev"
