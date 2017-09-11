@@ -52,13 +52,11 @@ class Qgis3Dev < Formula
   option "with-qspatialite", "Build QSpatialite Qt database driver"
   option "with-api-docs", "Build the API documentation with Doxygen and Graphviz"
 
-  deprecated_option "without-qt5-webkit-qt@5.7" => "without-qt5-webkit"
-
   depends_on Qgis3DevUnlinkedFormulae
 
   # core qgis
   depends_on "cmake" => :build
-  depends_on "ninja" => :build if build.with? "ninja"
+  depends_on "ninja" => [:build, :recommended]
   depends_on "bison" => :build
   depends_on "flex" => :build
   if build.with? "api-docs"
@@ -67,22 +65,6 @@ class Qgis3Dev < Formula
   end
 
   depends_on :python3
-
-  # TODO: move this to vendored pip3 install:
-  #       system {"PYTHONUSERBASE" => libexec}, HOMEBREW_PREFIX/"bin/pip3", "install", "--user", "<pkg>"
-  depends_on "future" => :python3
-  depends_on "psycopg2" => :python3
-  depends_on "dateutil" => :python3
-  depends_on "httplib2" => :python3
-  depends_on "pytz" => :python3
-  depends_on "six" => :python3
-  depends_on "nose2" => :python3
-  depends_on "pygments" => :python3
-  depends_on "jinja2" => :python3
-  depends_on "yaml" => :python3
-  depends_on "requests" => :python3
-  depends_on "owslib" => :python3
-  depends_on "matplotlib" => :python3
 
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
@@ -98,6 +80,7 @@ class Qgis3Dev < Formula
   depends_on "expat" # keg_only
   depends_on "proj"
   depends_on "spatialindex"
+  depends_on "matplotlib"
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
@@ -105,7 +88,7 @@ class Qgis3Dev < Formula
 
   # core providers
   depends_on "osgeo/osgeo4mac/gdal2" # keg_only
-  depends_on "osgeo/osgeo4mac/gdal2-python" => ["with-python3"] # keg_only
+  depends_on "osgeo/osgeo4mac/gdal2-python" # keg_only
   depends_on "osgeo/osgeo4mac/oracle-client-sdk" if build.with? "oracle"
   # TODO: add MSSQL third-party support formula?, :optional
 
@@ -165,6 +148,28 @@ class Qgis3Dev < Formula
       puts "gdal_python_opt_bin: #{gdal_python_opt_bin}"
       puts "gdal_opt_bin: #{gdal_opt_bin}"
     end
+
+    # Vendor required python3 pkgs if they are missing
+    # TODO: this should really be a requirements.txt in src tree
+    py_req = %w[
+      future
+      psycopg2
+      python-dateutil
+      httplib2
+      pytz
+      six
+      nose2
+      pygments
+      jinja2
+      pyyaml
+      requests
+      owslib
+    ].freeze
+
+    orig_user_base = ENV["PYTHONUSERBASE"]
+    ENV["PYTHONUSERBASE"] = libexec/"python"
+    system HOMEBREW_PREFIX/"bin/pip3", "install", "--user", *py_req
+    ENV["PYTHONUSERBASE"] = orig_user_base
 
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
     # so that no time and energy is wasted copying the Qt frameworks into QGIS.
@@ -272,12 +277,16 @@ class Qgis3Dev < Formula
 
     args << "-DWITH_APIDOC=#{build.with?("api-docs") ? "TRUE" : "FALSE"}"
 
+    # nix clang tidy runs
+    args << "-DCLANG_TIDY_EXE="
+
     # if using Homebrew's Python, make sure its components are always found first
     # see: https://github.com/Homebrew/homebrew/pull/28597
     ENV["PYTHONHOME"] = python_prefix
 
     # handle custom site-packages for keg-only modules and packages
-    ENV["PYTHONPATH"] = python_site_packages
+    ENV.append_path "PYTHONPATH", python_site_packages
+    ENV.append_path "PYTHONPATH", libexec/"python/lib/python/site-packages"
 
     # handle some compiler warnings
     # ENV["CXX_EXTRA_FLAGS"] = "-Wno-unused-private-field -Wno-deprecated-register"
@@ -285,8 +294,7 @@ class Qgis3Dev < Formula
     #   ENV.append "CXX_EXTRA_FLAGS", "-Wno-inconsistent-missing-override"
     # end
 
-    # nix clang tidy runs
-    args << "-DCLANG_TIDY_EXE="
+    ENV.prepend_path "PATH", libexec/"python/bin"
 
     mkdir "build" do
       # editor = "/usr/local/bin/bbedit"
@@ -319,7 +327,7 @@ class Qgis3Dev < Formula
     # only works with QGIS > 2.0.1
     # doesn't need executable bit set, loaded by Python runner in QGIS
     # TODO: for Py3
-    # libexec.install resource("pyqgis-startup")
+    # (libexec/"python").install resource("pyqgis-startup")
 
     bin.mkdir
     qgis_bin = bin/name.to_s
@@ -340,7 +348,15 @@ class Qgis3Dev < Formula
     # define default isolation env vars
     pthsep = File::PATH_SEPARATOR
     pypth = python_site_packages.to_s
-    pths = %w[/usr/bin /bin /usr/sbin /sbin /opt/X11/bin /usr/X11/bin]
+    pths = %w[
+      /usr/bin
+      /bin
+      /usr/sbin
+      /sbin
+      /opt/X11/bin
+      /usr/X11/bin
+      #{opt_libexec}/python/bin
+    ]
 
     # unless opts.include?("with-isolation")
     #   pths = ORIGINAL_PATHS.dup
@@ -355,7 +371,11 @@ class Qgis3Dev < Formula
     end
 
     # set install's lib/python#{py_ver}/site-packages first, so app will work if unlinked
-    pypths = %W[#{opt_lib}/python#{py_ver}/site-packages #{pypth}]
+    pypths = %W[
+      #{opt_lib}/python#{py_ver}/site-packages
+      #{opt_libexec}/python/lib/python/site-packages
+      #{pypth}
+    ]
 
     pths.insert(0, gdal_opt_bin)
     pths.insert(0, gdal_python_opt_bin)
@@ -369,8 +389,8 @@ class Qgis3Dev < Formula
       :PATH => pths.join(pthsep),
       :PYTHONPATH => pypths.join(pthsep),
       :GDAL_DRIVER_PATH => "#{HOMEBREW_PREFIX}/lib/gdalplugins",
+      :GDAL_DATA => "#{Formula["gdal2"].opt_share}/gdal",
     }
-    envars[:GDAL_DATA] = "#{Formula["gdal2"].opt_share}/gdal"
 
     proc_algs = "Contents/Resources/python/plugins/processing/algs"
     if opts.include?("with-grass") || brewed_grass7?
@@ -394,7 +414,7 @@ class Qgis3Dev < Formula
 
     # TODO: add for Py3
     # if opts.include?("with-isolation") || File.exist?("/Library/Frameworks/GDAL.framework")
-    #   envars[:PYQGIS_STARTUP] = opt_libexec/"pyqgis_startup.py"
+    #   envars[:PYQGIS_STARTUP] = opt_libexec/"python/pyqgis_startup.py"
     # end
 
     # envars.each { |key, value| puts "#{key.to_s}=#{value}" }
@@ -463,26 +483,6 @@ class Qgis3Dev < Formula
         export PYTHONPATH=#{qgis_python_packages}:#{gdal_python_packages}:#{python_site_packages}:$PYTHONPATH
 
     EOS
-
-    # check for recommended dev Python module dependencies
-    xm = []
-    %w[pyparsing mock nose2].each do |m|
-      xm << m unless module_importable? m
-    end
-    unless xm.empty?
-      s += <<-EOS.undent
-        #{Tty.red}
-        The following Python modules are recommended for QGIS development/testing:
-
-            #{xm.join(", ")}
-
-        You can install manually, via installer package or with `pip3` (if availble):
-
-            pip3 install <module>
-        #{Tty.red}
-        #{Tty.reset}
-      EOS
-    end
 
     s += <<-EOS.undent
       If you have built GRASS 7 for the Processing plugin set the following in QGIS:
