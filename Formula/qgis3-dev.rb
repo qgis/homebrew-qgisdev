@@ -313,8 +313,8 @@ class Qgis3Dev < Formula
 
     # Fixup some errant lib linking
     # TODO: fix upstream in CMake
-    dy_libs = [lib_qt4/"plugins/designer/libqgis_customwidgets.dylib"]
-    dy_libs << lib_qt4/"plugins/sqldrivers/libqsqlspatialite.dylib" if build.with? "qspatialite"
+    dy_libs = [lib/"qt/plugins/designer/libqgis_customwidgets.dylib"]
+    dy_libs << lib/"qt/plugins/sqldrivers/libqsqlspatialite.dylib" if build.with? "qspatialite"
     dy_libs.each do |dy_lib|
       MachO::Tools.dylibs(dy_lib.to_s).each do |i_n|
         %w[core gui native].each do |f_n|
