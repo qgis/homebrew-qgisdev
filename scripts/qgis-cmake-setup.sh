@@ -103,7 +103,8 @@ fcgi
 expat
 sqlite
 flex
-bison"
+bison
+libzip"
 
 full_prefixes=""
 for p in ${prefixes}; do
@@ -123,6 +124,8 @@ cmd+=" -DGEOS_LIBRARY:FILEPATH=$HB/opt/geos/lib/libgeos_c.dylib"
 cmd+=" -DGSL_CONFIG:FILEPATH=$HB/opt/gsl/bin/gsl-config"
 cmd+=" -DGSL_INCLUDE_DIR:PATH=$HB/opt/gsl/include"
 cmd+=" -DGSL_LIBRARIES:STRING='-L$HB/opt/gsl/lib -lgsl -lgslcblas'"
+cmd+=" -DLIBZIP_INCLUDE_DIR:PATH=$HB/opt/libzip"
+cmd+=" -DLIBZIP_CONF_INCLUDE_DIR:PATH=$HB/opt/libzip/lib/libzip/include"
 
 cmd+=" -DWITH_QWTPOLAR:BOOL=TRUE"
 cmd+=" -DWITH_INTERNAL_QWTPOLAR:BOOL=FALSE"
@@ -182,4 +185,3 @@ cmd+=" '${SRC_DIR}'"
 echo "${cmd}"
 
 eval $cmd
-
