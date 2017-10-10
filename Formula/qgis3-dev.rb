@@ -216,7 +216,6 @@ class Qgis3Dev < Formula
       flex
       bison
       fcgi
-      libzip
     ].freeze
     # Force CMake to search HB/opt paths first, so headers in HB/include are not found instead;
     # specifically, ensure any gdal v1 includes are not used
@@ -245,7 +244,6 @@ class Qgis3Dev < Formula
     args << "-DGSL_CONFIG=#{Formula["gsl"].opt_bin}/gsl-config"
     args << "-DGSL_INCLUDE_DIR=#{Formula["gsl"].opt_include}"
     args << "-DGSL_LIBRARIES='-L#{Formula["gsl"].opt_lib} -lgsl -lgslcblas'"
-    args << "-DLIBZIP_INCLUDE_DIR=#{Formula["libzip"].opt_include}"
 
     args << "-DWITH_SERVER=#{build.with?("server") ? "TRUE" : "FALSE"}"
 
