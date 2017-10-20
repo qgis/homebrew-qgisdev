@@ -181,16 +181,19 @@ class Qgis3Dev < Formula
     inreplace "src/customwidgets/CMakeLists.txt",
               "${QT_PLUGINS_DIR}/designer", lib/"qt/plugins/designer".to_s
 
-    # Fix custom widgets designer module install path
-    # TODO: add for QtWebkit bindings
+    # Fix custom widgets Designer module install path
     mkdir lib/"python#{py_ver}/site-packages/PyQt5"
     inreplace "CMakeLists.txt",
               "${PYQT5_MOD_DIR}", lib/"python#{py_ver}/site-packages/PyQt5".to_s
 
-    # Install qspatialite db plugin to local qt plugins prefix
+    # Install db plugins to local qt plugins prefix
     if build.with? "qspatialite"
       mkdir lib/"qt/plugins/sqldrivers"
       inreplace "src/providers/spatialite/qspatialite/CMakeLists.txt",
+                "${QT_PLUGINS_DIR}/sqldrivers", lib/"qt/plugins/sqldrivers".to_s
+    end
+    if build.with? "oracle"
+      inreplace "src/providers/oracle/ocispatial/CMakeLists.txt",
                 "${QT_PLUGINS_DIR}/sqldrivers", lib/"qt/plugins/sqldrivers".to_s
     end
 
@@ -411,6 +414,13 @@ class Qgis3Dev < Formula
       :GDAL_DRIVER_PATH => "#{HOMEBREW_PREFIX}/lib/gdalplugins",
       :GDAL_DATA => "#{Formula["gdal2"].opt_share}/gdal",
     }
+
+    # handle multiple Qt plugins directories
+    qtplgpths = %W[
+      #{Formula["qt"].opt_prefix}/plugins
+      #{HOMEBREW_PREFIX}/lib/qt/plugins
+    ]
+    envars[:QT_PLUGIN_PATH] = qtplgpths.join(pthsep)
 
     proc_algs = "Contents/Resources/python/plugins/processing/algs"
     if opts.include?("with-grass") || brewed_grass7?
