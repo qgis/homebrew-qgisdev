@@ -88,6 +88,9 @@ class Qgis3Dev < Formula
   depends_on "postgresql" => :recommended
   depends_on "libzip"
 
+  # needed for PKI authentication methods that require PKCS#8->PKCS#1 conversion
+  depends_on "libtasn1"
+
   # core providers
   depends_on "osgeo/osgeo4mac/gdal2" # keg_only
   depends_on "osgeo/osgeo4mac/gdal2-python" # keg_only
