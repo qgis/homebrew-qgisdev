@@ -48,4 +48,4 @@ deploy:
   acl: public_read
   on:
     branch: master
-    repo: OSGeo/homebrew-osgeo4mac
+    repo: OSGeo/homebrew-qgisdev
