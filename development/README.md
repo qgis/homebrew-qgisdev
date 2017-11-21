@@ -405,7 +405,7 @@ Under ``Kits`` tab, click ``Add``, then configure with:
   QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
   CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
   CMAKE_FIND_FRAMEWORK:STRING=LAST 
-  CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/qscintilla2;/usr/local/opt/qwt;/usr/local/opt/qwtpolar;/usr/local/opt/qca;/usr/local/opt/gdal2;/usr/local/opt/gsl;/usr/local/opt/geos;/usr/local/opt/proj;/usr/local/opt/libspatialite;/usr/local/opt/spatialindex;/usr/local/opt/fcgi;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison'
+  CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/qscintilla2;/usr/local/opt/qwt;/usr/local/opt/qwtpolar;/usr/local/opt/qca;/usr/local/opt/gdal2;/usr/local/opt/gsl;/usr/local/opt/geos;/usr/local/opt/proj;/usr/local/opt/libspatialite;/usr/local/opt/spatialindex;/usr/local/opt/fcgi;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison;/usr/local/opt/libzip'
   ```
   
   **Notes:**
