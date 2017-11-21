@@ -8,12 +8,11 @@ sudo: required
 before_install:
   - export TRAVIS_COMMIT="$(git rev-parse --verify -q HEAD)"
   - export CHANGED_FORMULAE="$(git diff --name-status $TRAVIS_COMMIT^ $TRAVIS_COMMIT | sed -n -E 's#^(A|M)[[:space:]]+Formula/(.+)\.rb$#\2#p' )"
-  #- if [ "${CHANGED_FORMULAE}" == "" ]; then
-  #    echo "Skipping CI; no changed formulae found in $TRAVIS_BUILD_DIR";
-  #    travis_terminate 0;
-  #  else
-  #    echo "Changed formulae are ${CHANGED_FORMULAE}";
-  #  fi
+  - if [ "${CHANGED_FORMULAE}" == "" ]; then
+      echo "Skipping CI; no changed formulae found in $TRAVIS_BUILD_DIR";
+      travis_terminate 0;
+    else
+      echo "Changed formulae are ${CHANGED_FORMULAE}"; fi
   - export HOMEBREW_REPOSITORY="$(brew --repo)"
   - /usr/bin/yes | pip2 uninstall numpy
   - sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"

@@ -8,6 +8,7 @@ class Qgis3DevUnlinkedFormulae < Requirement
     #sha256 "e43817dd690d4f758f45b1656e92281e0e36d61cb44a8f945eeda8a90bd12e6f" => :high_sierra
   end
 
+
   def qt4_linked
     (Formula["qt"].linked_keg/"lib/QtCore.framework/Versions/4").exist?
   rescue
