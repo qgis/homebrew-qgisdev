@@ -2,13 +2,6 @@ class Qgis3DevUnlinkedFormulae < Requirement
   fatal true
   satisfy(:build_env => false) { !qt4_linked && !pyqt4_linked && !txt2tags_linked }
 
-  bottle do
-    root_url "https://osgeo4mac.s3.amazonaws.com/bottles"
-    #sha256 "e43817dd690d4f758f45b1656e92281e0e36d61cb44a8f945eeda8a90bd12e6f" => :sierra
-    #sha256 "e43817dd690d4f758f45b1656e92281e0e36d61cb44a8f945eeda8a90bd12e6f" => :high_sierra
-  end
-
-
   def qt4_linked
     (Formula["qt"].linked_keg/"lib/QtCore.framework/Versions/4").exist?
   rescue
@@ -40,6 +33,12 @@ end
 class Qgis3Dev < Formula
   desc "User friendly open source Geographic Information System"
   homepage "https://www.qgis.org"
+
+  bottle do
+    root_url "https://osgeo4mac.s3.amazonaws.com/bottles"
+    sha256 "e43817dd690d4f758f45b1656e92281e0e36d61cb44a8f945eeda8a90bd12e6f" => :sierra
+    sha256 "e43817dd690d4f758f45b1656e92281e0e36d61cb44a8f945eeda8a90bd12e6f" => :high_sierra
+  end
 
   url "https://github.com/qgis/QGIS.git", :branch => "master"
   version "2.99"
