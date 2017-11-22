@@ -19,7 +19,8 @@ set -e
 
 for f in ${CHANGED_FORMULAE};do
   echo "Installing changed formula ${f}..."
-  brew install ${f}
+  brew install ${f}&
+  PID=$!
   # add progress to ensure Travis doesn't complain about no output
   while true; do
     sleep 30
