@@ -37,7 +37,7 @@ class Qgis3Dev < Formula
   url "https://github.com/qgis/QGIS.git", :branch => "master"
   version "2.99"
 
-  # hello
+  # fake change to formula
 
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
