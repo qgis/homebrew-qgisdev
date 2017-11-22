@@ -15,7 +15,6 @@ before_install:
       echo "Changed formulae are ${CHANGED_FORMULAE}"; fi
   - export HOMEBREW_REPOSITORY="$(brew --repo)"
   - /usr/bin/yes | pip2 uninstall numpy
-  - /usr/bin/yes | pip uninstall numpy
   - sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"
   - git -C "$HOMEBREW_REPOSITORY" reset --hard origin/master
   - mkdir -p "$HOMEBREW_REPOSITORY/Library/Taps/qgis"
