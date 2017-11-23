@@ -52,6 +52,7 @@ class Qgis3Dev < Formula
   # option "with-qt-mysql", "Build extra Qt MySQL plugin for eVis plugin"
   option "with-qspatialite", "Build QSpatialite Qt database driver"
   option "with-api-docs", "Build the API documentation with Doxygen and Graphviz"
+  option "with-3d", "Build with 3D Map View panel"
 
   depends_on Qgis3DevUnlinkedFormulae
 
@@ -284,6 +285,8 @@ class Qgis3Dev < Formula
     args << "-DWITH_QSPATIALITE=#{build.with?("qspatialite") ? "TRUE" : "FALSE"}"
 
     args << "-DWITH_APIDOC=#{build.with?("api-docs") ? "TRUE" : "FALSE"}"
+
+    args << "-DWITH_3D=#{build.with?("3d") ? "TRUE" : "FALSE"}"
 
     # nix clang tidy runs
     args << "-DCLANG_TIDY_EXE="
