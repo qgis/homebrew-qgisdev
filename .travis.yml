@@ -6,8 +6,9 @@ rvm: system
 sudo: required
 cache:
   pip: true
+  ccache: true
   directories:
-    - $HOME/.ccache
+    - $HOME/Library/Caches/Homebrew
 
 before_install:
   - export TRAVIS_COMMIT="$(git rev-parse --verify -q HEAD)"

@@ -15,6 +15,9 @@
 #                                                                         #
 ###########################################################################
 
+brew install ccache
+export PATH="/usr/local/opt/ccache/libexec:$PATH"
+
 set -e
 
 for f in ${CHANGED_FORMULAE};do

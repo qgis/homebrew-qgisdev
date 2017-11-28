@@ -38,7 +38,6 @@ class Qgis3Dev < Formula
   version "2.99"
 
   # fake change to formula
-  #
 
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
