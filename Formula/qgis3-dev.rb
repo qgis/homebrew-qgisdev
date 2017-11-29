@@ -539,7 +539,13 @@ class Qgis3Dev < Formula
   end
 
   def python_exec
-    `which python3`.strip
+    if brewed_python?
+      Formula["python3"].opt_bin/"python3"
+    else
+      py_exec = `which python3`.strip
+      raise if py_exec == ""
+      py_exec
+    end
   end
 
   def py_ver
