@@ -432,8 +432,8 @@ class Qgis3Dev < Formula
       envars[:GRASS_PREFIX] = "#{grass7.opt_prefix}/grass-base"
       begin
         inreplace app/"#{proc_algs}/grass7/Grass7Utils.py",
-                  "/Applications/GRASS-7.0.app/Contents/MacOS",
-                  "#{grass7.opt_prefix}/grass-base"
+                  "'/Applications/GRASS-7.{}.app/Contents/MacOS'.format(version)",
+                  "'#{grass7.opt_prefix}/grass-base'"
         puts "GRASS 7 GrassUtils.py has been updated"
       rescue Utils::InreplaceError
         puts "GRASS 7 GrassUtils.py already updated"
