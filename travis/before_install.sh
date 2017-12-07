@@ -54,7 +54,7 @@ for f in ${CHANGED_FORMULAE};do
 
     if [[ "${f}" =~ "qgis" ]];then
       echo "Installing QGIS Python3 dependencies"
-      ${HOMEBREW_PREFIX}/bin/pip3 install future mock nose2 numpy psycopg2 pyyaml
+      ${HOMEBREW_PREFIX}/bin/pip3 install future mock nose2 psycopg2 pyyaml
     fi
   fi
 
