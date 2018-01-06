@@ -59,7 +59,7 @@ class Qgis3Dev < Formula
   # core qgis
   depends_on "cmake" => :build
   depends_on "ninja" => [:build, :recommended]
-  depends_on "bison@2.7" => :build
+  depends_on "bison" => :build
   depends_on "flex" => :build
   if build.with? "api-docs"
     depends_on "graphviz"
@@ -221,7 +221,7 @@ class Qgis3Dev < Formula
       sqlite
       libzip
       flex
-      bison@2.7
+      bison
       fcgi
     ].freeze
     # Force CMake to search HB/opt paths first, so headers in HB/include are not found instead;
