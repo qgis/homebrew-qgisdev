@@ -66,7 +66,7 @@ class Qgis3Dev < Formula
     depends_on "doxygen"
   end
 
-  depends_on :python3
+  depends_on "python3"
 
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
