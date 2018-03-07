@@ -518,14 +518,14 @@ class Qgis3Dev < Formula
       For standalone Python3 development, set the following environment variable:
         export PYTHONPATH=#{qgis_python_packages}:#{gdal_python_packages}:#{python_site_packages}:$PYTHONPATH
 
-    EOS
+    <<~EOS
 
     s += <<-EOS.undent
       If you have built GRASS 7 for the Processing plugin set the following in QGIS:
         Processing->Options: Providers->GRASS GIS 7 commands->GRASS 7 folder to:
            #{HOMEBREW_PREFIX}/opt/grass7/grass-base
 
-    EOS
+    <<~EOS
 
     s
   end
