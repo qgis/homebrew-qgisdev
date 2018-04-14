@@ -34,8 +34,8 @@ class Qgis3Dev < Formula
   desc "User friendly open source Geographic Information System"
   homepage "https://www.qgis.org"
 
-  url "https://github.com/qgis/QGIS.git", :branch => "master"
-  version "2.99"
+  url "https://github.com/qgis/QGIS.git", :tag => "final-3_0_1"
+  version "3.0.1"
 
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
@@ -66,7 +66,7 @@ class Qgis3Dev < Formula
     depends_on "doxygen"
   end
 
-  depends_on :python3
+  depends_on "python"
 
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
@@ -83,18 +83,16 @@ class Qgis3Dev < Formula
   depends_on "expat" # keg_only
   depends_on "proj"
   depends_on "spatialindex"
-  depends_on "homebrew/science/matplotlib"
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
   depends_on "libzip"
+  depends_on "gdal"
 
   # needed for PKI authentication methods that require PKCS#8->PKCS#1 conversion
   depends_on "libtasn1"
 
   # core providers
-  depends_on "osgeo/osgeo4mac/gdal2" # keg_only
-  depends_on "osgeo/osgeo4mac/gdal2-python" # keg_only
   depends_on "osgeo/osgeo4mac/oracle-client-sdk" if build.with? "oracle"
   # TODO: add MSSQL third-party support formula?, :optional
 
@@ -150,8 +148,6 @@ class Qgis3Dev < Formula
       puts "python_site_packages: #{python_site_packages}"
       puts "python_prefix: #{python_prefix}"
       puts "qgis_python_packages: #{qgis_python_packages}"
-      puts "gdal_python_packages: #{gdal_python_packages}"
-      puts "gdal_python_opt_bin: #{gdal_python_opt_bin}"
       puts "gdal_opt_bin: #{gdal_opt_bin}"
     end
 
@@ -170,6 +166,8 @@ class Qgis3Dev < Formula
       pyyaml
       requests
       owslib
+      matplotlib
+      gdal
     ].freeze
 
     orig_user_base = ENV["PYTHONUSERBASE"]
@@ -211,7 +209,7 @@ class Qgis3Dev < Formula
       qwt
       qwtpolar
       qca
-      gdal2
+      gdal
       gsl
       geos
       proj
@@ -246,7 +244,7 @@ class Qgis3Dev < Formula
 
     # Prefer opt_prefix for CMake modules that find versioned prefix by default
     # This keeps non-critical dependency upgrades from breaking QGIS linking
-    args << "-DGDAL_LIBRARY=#{Formula["gdal2"].opt_lib}/libgdal.dylib"
+    args << "-DGDAL_LIBRARY=#{Formula["gdal"].opt_lib}/libgdal.dylib"
     args << "-DGEOS_LIBRARY=#{Formula["geos"].opt_lib}/libgeos_c.dylib"
     args << "-DGSL_CONFIG=#{Formula["gsl"].opt_bin}/gsl-config"
     args << "-DGSL_INCLUDE_DIR=#{Formula["gsl"].opt_include}"
@@ -407,8 +405,6 @@ class Qgis3Dev < Formula
     ]
 
     pths.insert(0, gdal_opt_bin)
-    pths.insert(0, gdal_python_opt_bin)
-    pypths.insert(0, gdal_python_packages)
 
     if opts.include?("with-gpsbabel")
       pths.insert(0, Formula["gpsbabel"].opt_bin.to_s)
@@ -418,7 +414,7 @@ class Qgis3Dev < Formula
       :PATH => pths.join(pthsep),
       :PYTHONPATH => pypths.join(pthsep),
       :GDAL_DRIVER_PATH => "#{HOMEBREW_PREFIX}/lib/gdalplugins",
-      :GDAL_DATA => "#{Formula["gdal2"].opt_share}/gdal",
+      :GDAL_DATA => "#{Formula["gdal"].opt_share}/gdal",
     }
 
     # handle multiple Qt plugins directories
@@ -516,7 +512,7 @@ class Qgis3Dev < Formula
             bundle they are not.
 
       For standalone Python3 development, set the following environment variable:
-        export PYTHONPATH=#{qgis_python_packages}:#{gdal_python_packages}:#{python_site_packages}:$PYTHONPATH
+        export PYTHONPATH=#{qgis_python_packages}:#{python_site_packages}:$PYTHONPATH
 
     EOS
 
@@ -543,9 +539,9 @@ class Qgis3Dev < Formula
 
   def python_exec
     if brewed_python?
-      Formula["python3"].opt_bin/"python3"
+      Formula["python"].opt_bin/"python"
     else
-      py_exec = `which python3`.strip
+      py_exec = `which python`.strip
       raise if py_exec == ""
       py_exec
     end
@@ -556,7 +552,7 @@ class Qgis3Dev < Formula
   end
 
   def brewed_python?
-    Formula["python3"].linked_keg.exist?
+    Formula["python"].linked_keg.exist?
   end
 
   def python_site_packages
@@ -571,19 +567,11 @@ class Qgis3Dev < Formula
     opt_lib/"python#{py_ver}/site-packages".to_s
   end
 
-  def gdal_python_packages
-    Formula["gdal2-python"].opt_lib/"python#{py_ver}/site-packages".to_s
-  end
-
-  def gdal_python_opt_bin
-    Formula["gdal2-python"].opt_bin.to_s
-  end
-
   def gdal_opt_bin
-    Formula["gdal2"].opt_bin.to_s
+    Formula["gdal"].opt_bin.to_s
   end
 
   def module_importable?(mod)
-    `#{python_exec} -c 'import sys;sys.path.insert(1, "#{gdal_python_packages}"); import #{mod}'`.strip
+    `#{python_exec} -c 'import sys; import #{mod}'`.strip
   end
 end
