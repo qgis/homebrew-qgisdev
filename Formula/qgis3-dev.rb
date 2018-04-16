@@ -136,6 +136,10 @@ class Qgis3Dev < Formula
   #   version "2.14.0"
   # end
 
+  # for matplotlib
+  depends_on "pkg-config"
+  depends_on "freetype"
+
   needs :cxx11
 
   # for venv
@@ -163,9 +167,17 @@ class Qgis3Dev < Formula
     url "https://files.pythonhosted.org/packages/c2/4b/137dea450d6e1e3d474e1d873cd1d4f7d3beed7e0dc973b06e8e10d32488/cycler-0.10.0.tar.gz"
     sha256 "cd7b2d1018258d7247a71425e9f26463dfb444d411c39569972f4ce586b0c9d8"
   end
+  resource "pyparsing" do
+    url "https://files.pythonhosted.org/packages/3c/ec/a94f8cf7274ea60b5413df054f82a8980523efd712ec55a59e7c3357cf7c/pyparsing-2.2.0.tar.gz"
+    sha256 "0832bcf47acd283788593e7a0f542407bd9550a55a8a8435214a1960e04bcb04"
+  end
   resource "six" do
     url "https://files.pythonhosted.org/packages/16/d8/bc6316cf98419719bd59c91742194c111b6f2e85abac88e496adefaf7afe/six-1.11.0.tar.gz"
     sha256 "70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
+  end
+  resource "coverage" do
+    url "https://files.pythonhosted.org/packages/35/fe/e7df7289d717426093c68d156e0fd9117c8f4872b6588e8a8928a0f68424/coverage-4.5.1.tar.gz"
+    sha256 "56e448f051a201c5ebbaa86a5efd0ca90d327204d8b059ab25ad0f35fbfd79f1"
   end
   resource "nose2" do
     url "https://files.pythonhosted.org/packages/93/46/a389a65237d0520bb4a98fc174fdf6568ad9dcc79b9c1d1f30afc6776031/nose2-0.7.4.tar.gz"
@@ -195,9 +207,37 @@ class Qgis3Dev < Formula
     url "https://files.pythonhosted.org/packages/ac/71/ff2fbfa64fca17069ce30fac324533aa686c5cb64e6b5f522faed558848f/OWSLib-0.16.0.tar.gz"
     sha256 "ec95a5e93c145a5d84b0074b9ea27570943486552a669151140debf08a100554"
   end
+  resource "urllib3" do
+    url "https://files.pythonhosted.org/packages/ee/11/7c59620aceedcc1ef65e156cc5ce5a24ef87be4107c2b74458464e437a5d/urllib3-1.22.tar.gz"
+    sha256 "cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"
+  end
+  resource "chardet" do
+    url "https://files.pythonhosted.org/packages/fc/bb/a5768c230f9ddb03acc9ef3f0d4a3cf93462473795d18e9535498c8f929d/chardet-3.0.4.tar.gz"
+    sha256 "84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"
+  end
+  resource "certifi" do
+    url "https://files.pythonhosted.org/packages/15/d4/2f888fc463d516ff7bf2379a4e9a552fef7f22a94147655d9b1097108248/certifi-2018.1.18.tar.gz"
+    sha256 "edbc3f203427eef571f79a7692bb160a2b0f7ccaa31953e99bd17e307cf63f7d"
+  end
+  resource "idna" do
+    url "https://files.pythonhosted.org/packages/f4/bd/0467d62790828c23c47fc1dfa1b1f052b24efdf5290f071c7a91d0d82fd3/idna-2.6.tar.gz"
+    sha256 "2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f"
+  end
+  resource "pyproj" do
+    url "https://files.pythonhosted.org/packages/29/72/5c1888c4948a0c7b736d10e0f0f69966e7c0874a660222ed0a2c2c6daa9f/pyproj-1.9.5.1.tar.gz"
+    sha256 "53fa54c8fa8a1dfcd6af4bf09ce1aae5d4d949da63b90570ac5ec849efaf3ea8"
+  end
   resource "matplotlib" do
     url "https://files.pythonhosted.org/packages/ec/ed/46b835da53b7ed05bd4c6cae293f13ec26e877d2e490a53a709915a9dcb7/matplotlib-2.2.2.tar.gz"
     sha256 "4dc7ef528aad21f22be85e95725234c5178c0f938e2228ca76640e5e84d8cde8"
+  end
+  resource "kiwisolver" do
+    url "https://files.pythonhosted.org/packages/31/60/494fcce70d60a598c32ee00e71542e52e27c978e5f8219fae0d4ac6e2864/kiwisolver-1.0.1.tar.gz"
+    sha256 "ce3be5d520b4d2c3e5eeb4cd2ef62b9b9ab8ac6b6fedbaa0e39cdb6f50644278"
+  end
+  resource "numpy" do
+    url "https://files.pythonhosted.org/packages/0b/66/86185402ee2d55865c675c06a5cfef742e39f4635a4ce1b1aefd20711c13/numpy-1.14.2.zip"
+    sha256 "facc6f925c3099ac01a1f03758100772560a0b020fb9d70f210404be08006bcb"
   end
   resource "GDAL" do
     url "https://files.pythonhosted.org/packages/4d/74/15958684bdec900d72c13fdc7e455d75d36437018e238f8c8fc7dd5aad37/GDAL-2.2.4.tar.gz"
@@ -221,39 +261,9 @@ class Qgis3Dev < Formula
       puts "gdal_opt_bin: #{gdal_opt_bin}"
     end
 
-
-
-    # Vendor required python3 pkgs if they are missing
-    # TODO: this should really be a requirements.txt in src tree
-    py_req = %w[
-      future
-      psycopg2
-      python-dateutil
-      httplib2
-      pytz
-      six
-      nose2
-      Pygments
-      Jinja2
-      MarkupSafe
-      PyYAML
-      requests
-      OWSLib
-      Cycler
-      matplotlib
-      GDAL
-    ].freeze
-
-    orig_user_base = ENV["PYTHONUSERBASE"]
-    ENV["PYTHONUSERBASE"] = libexec/"python"
-    system HOMEBREW_PREFIX/"bin/pip3", "install", "--user", *py_req
-    ENV["PYTHONUSERBASE"] = orig_user_base
-    # venv test but fail at installing matplotlib
-    #venv3 = virtualenv_create(libexec, "python3")
-    #py_req.each do |r|
-    #  venv3.pip_install resource(r)
-    #end
-    #venv.pip_install_and_link buildpath
+    # venv
+    venv3 = virtualenv_create(libexec, "python3")
+    venv3.pip_install resources
 
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
     # so that no time and energy is wasted copying the Qt frameworks into QGIS.
@@ -375,7 +385,7 @@ class Qgis3Dev < Formula
 
     # handle custom site-packages for keg-only modules and packages
     ENV.append_path "PYTHONPATH", python_site_packages
-    ENV.append_path "PYTHONPATH", libexec/"python/lib/python/site-packages"
+    ENV.append_path "PYTHONPATH", qgis_python_packages
 
 
     # handle some compiler warnings
@@ -384,7 +394,7 @@ class Qgis3Dev < Formula
     #   ENV.append "CXX_EXTRA_FLAGS", "-Wno-inconsistent-missing-override"
     # end
 
-    ENV.prepend_path "PATH", libexec/"python/bin"
+    ENV.prepend_path "PATH", libexec/"bin"
 
     mkdir "build" do
       # editor = "/usr/local/bin/bbedit"
@@ -577,7 +587,7 @@ class Qgis3Dev < Formula
   end
 
   def caveats
-    s = <<-EOS.undent
+    s = <<-EOS
       Bottles support only Homebrew's Python3
 
       QGIS is built as an application bundle. Environment variables for the
@@ -600,7 +610,7 @@ class Qgis3Dev < Formula
 
     EOS
 
-    s += <<-EOS.undent
+    s += <<-EOS
       If you have built GRASS 7 for the Processing plugin set the following in QGIS:
         Processing->Options: Providers->GRASS GIS 7 commands->GRASS 7 folder to:
            #{HOMEBREW_PREFIX}/opt/grass7/grass-base
@@ -622,13 +632,14 @@ class Qgis3Dev < Formula
   end
 
   def python_exec
-    if brewed_python?
-      Formula["python"].opt_bin/"python3"
-    else
-      py_exec = `which python`.strip
-      raise if py_exec == ""
-      py_exec
-    end
+    libexec/"bin/python"
+    # if brewed_python?
+    #   Formula["python"].opt_bin/"python3"
+    # else
+    #   py_exec = `which python`.strip
+    #   raise if py_exec == ""
+    #   py_exec
+    # end
   end
 
   def py_ver
@@ -640,7 +651,7 @@ class Qgis3Dev < Formula
   end
 
   def python_site_packages
-    HOMEBREW_PREFIX/"lib/python#{py_ver}/site-packages"
+    libexec/"lib/python#{py_ver}/site-packages"
   end
 
   def python_prefix
