@@ -53,7 +53,7 @@ Python 3.6.5
 ```
 
 ```
-> $ python3 --version
+> $ python2 --version
 Python 2.7.15
 ```
 
