@@ -34,8 +34,8 @@ class Qgis3Dev < Formula
   desc "User friendly open source Geographic Information System"
   homepage "https://www.qgis.org"
 
-  url "https://github.com/qgis/QGIS.git", :branch => "master"
-  version "2.99"
+  url "https://github.com/qgis/QGIS.git", :branch => "release-3_2"
+  version "3.2.0"
 
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
@@ -66,7 +66,7 @@ class Qgis3Dev < Formula
     depends_on "doxygen"
   end
 
-  depends_on :python3
+  depends_on "python"
 
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
@@ -83,7 +83,8 @@ class Qgis3Dev < Formula
   depends_on "expat" # keg_only
   depends_on "proj"
   depends_on "spatialindex"
-  depends_on "homebrew/science/matplotlib"
+  # depends_on "homebrew/science/matplotlib" # deprecated
+  depends_on "brewsci/bio/matplotlib"
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
@@ -497,7 +498,7 @@ class Qgis3Dev < Formula
   end
 
   def caveats
-    s = <<-EOS.undent
+    s = <<~EOS
       Bottles support only Homebrew's Python3
 
       QGIS is built as an application bundle. Environment variables for the
@@ -520,7 +521,7 @@ class Qgis3Dev < Formula
 
     EOS
 
-    s += <<-EOS.undent
+    s += <<~EOS
       If you have built GRASS 7 for the Processing plugin set the following in QGIS:
         Processing->Options: Providers->GRASS GIS 7 commands->GRASS 7 folder to:
            #{HOMEBREW_PREFIX}/opt/grass7/grass-base
