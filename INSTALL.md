@@ -8,7 +8,7 @@ Or install via URL (which will not receive updates):
 
 `brew install https://raw.githubusercontent.com/qgis/homebrew-qgisdev/master/Formula/qgis3-dev.rb`
 
-Another solution is to copy all the content directly to: Taps/gis/homebrew-qgisdev
+Another solution is to copy all the content directly to: `../Taps/gis/homebrew-qgisdev`
 
 `$ cd /usr/local/Homebrew/Library/Taps/qgis/homebrew-qgisdev`
 
@@ -36,11 +36,11 @@ depends_on "brewsci/bio/matplotlib"
 
 `$ git commit -m "fix for matplotlib and python”`
 
-ImportError: No module named site 
+For, ImportError: No module named site 
 
-`$ brew reinstall pyqt`
+`$ brew install pyqt`
 
-`$ brew reinstall bison`
+`$ brew install bison`
 
 ```
 > $ python --version
@@ -57,7 +57,7 @@ Python 3.6.5
 Python 2.7.15
 ```
 
-Modify the file /usr/local/bin/pyrcc5 and change pythonw2.7 to python3: 
+Modify the file `/usr/local/bin/pyrcc5` and change `pythonw2.7` to `python3`: 
 
 ```
 #!/bin/sh
@@ -66,9 +66,9 @@ exec python3 -m PyQt5.pyrcc_main ${1+"$@"}
 
 Build 
 
-With Proj v5.1.0 # proj4: Library not loaded: libproj.13.dylib
-
 `$ brew install proj` # --build-from-source
+
+Proj v5.1.0 # With Proj v4: Library not loaded: libproj.13.dylib
 
 `$ brew install libspatialite` # --build-from-source
 
@@ -81,6 +81,12 @@ With Proj v5.1.0 # proj4: Library not loaded: libproj.13.dylib
 `$ mv /usr/local/opt/qgis3-dev/QGIS.app /Applications/QGIS\ 3.app`
 
 `$ ln -s /Applications/QGIS\ 3.app /usr/local/opt/qgis3-dev/QGIS.app`
+
+To run
+
+Grass: `$ grass74` # in the installation: `ln -s ../Cellar/grass7/7.4.0/bin/grass74 grass74`
+
+Saga:  `$ /usr/local/opt/saga-gis-lts/bin/saga_gui/saga_gui` # you could create a direct link : `ln -s ../Cellar/saga-gis-lts/2.3.2/bin/saga_gui saga_gui`
 
 References:
 
