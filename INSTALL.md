@@ -36,6 +36,9 @@ depends_on "brewsci/bio/matplotlib"
 
 `$ git commit -m "fix for matplotlib and python”`
 
+
+See [changes](https://github.com/fjperini/homebrew-qgisdev/blob/matplotlib-fix%2Bpython/Formula/qgis3-dev.rb). You can copy the entire file to make sure.
+
 For, `ImportError: No module named site`
 
 `$ brew install pyqt`
