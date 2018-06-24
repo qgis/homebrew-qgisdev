@@ -59,9 +59,8 @@ for f in ${CHANGED_FORMULAE};do
     fi
   fi
   
-  brew install gdal
   brew install gdal2
-
+  
 done
-
-
+# Remove any left over lock or stray cache files
+brew cleanup
