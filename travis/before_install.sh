@@ -58,5 +58,5 @@ for f in ${CHANGED_FORMULAE};do
       ${HOMEBREW_PREFIX}/bin/pip3 install future mock nose2 numpy psycopg2 pyyaml
     fi
   fi
-  brew install gdal2-python
+
 done
