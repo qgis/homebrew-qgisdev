@@ -8,7 +8,7 @@ Or install via URL (which will not receive updates):
 
 `brew install https://raw.githubusercontent.com/qgis/homebrew-qgisdev/master/Formula/qgis3-dev.rb`
 
-Another solution is to copy all the content directly to: `../Taps/gis/homebrew-qgisdev`
+Another solution is to copy all the content directly to: `../Taps/qgis/homebrew-qgisdev`
 
 `$ cd /usr/local/Homebrew/Library/Taps/qgis/homebrew-qgisdev`
 
