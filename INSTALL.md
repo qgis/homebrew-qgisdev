@@ -1,6 +1,6 @@
 **QGIS 3.2 Bonn on macOS with Homebrew**
 
-![QGIS](https://raw.githubusercontent.com/fjperini/homebrew-qgisdev/master/screenshots.png "QGIS")
+![QGIS](https://raw.githubusercontent.com/fjperini/homebrew-qgisdev/matplotlib-fix%2Bpython/screenshot.png "QGIS")
 
 `$ brew tap qgis/homebrew-qgisdev`
 
