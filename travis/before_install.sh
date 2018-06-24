@@ -60,7 +60,6 @@ for f in ${CHANGED_FORMULAE};do
   fi
   
   brew update || brew update
-  brew install python3
   brew install gdal --with-complete
   brew install gdal2 --with-complete
 
