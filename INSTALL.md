@@ -87,9 +87,19 @@ The same thing happens in Travis when doing a pull request. Suggestions to corre
 
 To run
 
-Grass: `$ grass74` # in the installation: `ln -s ../Cellar/grass7/7.4.0/bin/grass74 grass74`
+GRASS: `$ grass74` # in the installation: `ln -s ../Cellar/grass7/7.4.0/bin/grass74 /usr/local/bin/grass74`
 
-Saga:  `$ saga_gui` # create a direct link : `ln -s ../Cellar/saga-gis-lts/2.3.2/bin/saga_gui saga_gui`
+SAGA:  `$ saga_gui` # create a direct link : `ln -s ../Cellar/saga-gis-lts/2.3.2/bin/saga_gui /usr/local/bin/saga_gui`
+
+To create the `SAGA.app` package use `saga-gis-lts --with-app`. # with fails
+
+There is also the package `saga-gis`
+
+`
+keg_only "QGIS fails to load the correct SAGA version, if the latest version is in the path"
+`
+
+For `GRASS.app`, it is not available in `grass7`.
 
 References:
 
