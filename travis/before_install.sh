@@ -59,9 +59,8 @@ for f in ${CHANGED_FORMULAE};do
     fi
   fi
   
-  brew update || brew update
-  brew install gdal --with-complete
-  brew install gdal2 --with-complete
+  brew install gdal
+  brew install gdal2
 
 done
 
