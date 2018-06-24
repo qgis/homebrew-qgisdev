@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    homebrew-osgeo4mac travis ci - install.sh
+#    homebrew-qgisdev travis ci - install.sh
 #    ---------------------
 #    Date                 : Dec 2016
 #    Copyright            : (C) 2016 by Boundless Spatial, Inc.
@@ -19,16 +19,5 @@ set -e
 
 for f in ${CHANGED_FORMULAE};do
   echo "Installing dependencies for changed formula ${f}..."
-  brew install --only-dependencies --build-bottle ${TRAVIS_REPO_SLUG}/${f}&
-  PID=$!
-  # add progress to ensure Travis doesn't complain about no output
-  while true; do
-    sleep 30
-    if jobs -rp | grep ${PID} >/dev/null; then
-      echo "."
-    else
-      echo
-      break
-    fi
-  done
+  brew install ${f} --only-dependencies
 done
