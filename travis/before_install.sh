@@ -42,7 +42,7 @@ for f in ${CHANGED_FORMULAE};do
 
   if [ "$(echo ${deps} | grep -c 'python3')" != "0" ];then
     echo "Installing and configuring Homebrew Python3"
-    brew install python3
+    brew install python
 
     # Set up Python .pth files
     # get python3 short version (major.minor)
