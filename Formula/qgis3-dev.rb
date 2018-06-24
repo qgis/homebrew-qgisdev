@@ -68,8 +68,6 @@ class Qgis3Dev < Formula
 
   depends_on "python"
 
-  depends_on "matplotlib" # numpy
-
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
   depends_on "sip"
