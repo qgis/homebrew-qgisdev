@@ -29,7 +29,8 @@ brew remove qt || true
 brew remove pyqt || true
 
 # Add taps
-brew tap homebrew/science || true
+# brew tap homebrew/science || true
+brew tap brewsci/bio/matplotlib || true
 brew tap osgeo/osgeo4mac || true
 
 brew update || brew update
