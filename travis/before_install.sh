@@ -42,7 +42,7 @@ for f in ${CHANGED_FORMULAE};do
 
   if [ "$(echo ${deps} | grep -c 'python3')" != "0" ];then
     echo "Installing and configuring Homebrew Python3"
-    brew install python3
+    brew install python
 
     # Set up Python .pth files
     # get python3 short version (major.minor)
@@ -58,6 +58,11 @@ for f in ${CHANGED_FORMULAE};do
       ${HOMEBREW_PREFIX}/bin/pip3 install future mock nose2 numpy psycopg2 pyyaml
     fi
   fi
+  
+  brew update || brew update
+  brew install python3
+  brew install gdal --with-complete
+  brew install gdal2 --with-complete
 
 done
 
