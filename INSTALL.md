@@ -36,7 +36,7 @@ depends_on "brewsci/bio/matplotlib"
 
 `$ git commit -m "fix for matplotlib and python”`
 
-For, ImportError: No module named site 
+For, `ImportError: No module named site`
 
 `$ brew install pyqt`
 
@@ -66,17 +66,17 @@ exec python3 -m PyQt5.pyrcc_main ${1+"$@"}
 
 Build 
 
-`$ brew install proj` # --build-from-source
+`$ brew install proj` # `--build-from-source`
 
 Proj v5.1.0 # With Proj v4: Library not loaded: libproj.13.dylib
 
-`$ brew install libspatialite` # --build-from-source
+`$ brew install libspatialite` # `--build-from-source`
 
-`$ brew install libgeotiff` # --build-from-source
+`$ brew install libgeotiff` # `--build-from-source`
 
 `$ brew install gdal2` # recommended. Other: `gdal --with-complete`
 
-`$ brew install -v --no-sandbox qgis3-dev --with-grass  --with-saga-gis-lts`  # other:  --with-r --with-3d
+`$ brew install -v --no-sandbox qgis3-dev --with-grass  --with-saga-gis-lts`  # other:  `--with-r` `--with-3d`
 
 It can stop at the end of the `gdal2` installation, for that reason we installed it before. If it stops, just rerun the above command to continue with the installation of QGIS.
 The same thing happens in Travis when doing a pull request. Suggestions to correct it?
