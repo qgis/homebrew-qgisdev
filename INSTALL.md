@@ -2,7 +2,7 @@
 
 ![QGIS](https://raw.githubusercontent.com/fjperini/homebrew-qgisdev/matplotlib-fix%2Bpython/screenshot.png "QGIS")
 
-`$ brew tap qgis/homebrew-qgisdev`
+`$ brew tap qgis/qgisdev`
 
 Or install via URL (which will not receive updates):
 
@@ -74,9 +74,12 @@ Proj v5.1.0 # With Proj v4: Library not loaded: libproj.13.dylib
 
 `$ brew install libgeotiff` # --build-from-source
 
-`$ brew install gdal --with-complete`
+`$ brew install gdal2` # recommended. Other: `gdal --with-complete`
 
 `$ brew install -v --no-sandbox qgis3-dev --with-grass  --with-saga-gis-lts`  # other:  --with-r --with-3d
+
+It can stop at the end of the `gdal2` installation, for that reason we installed it before. If it stops, just rerun the above command to continue with the installation of QGIS.
+The same thing happens in Travis when doing a pull request. Suggestions to correct it?
 
 `$ mv /usr/local/opt/qgis3-dev/QGIS.app /Applications/QGIS\ 3.app`
 
@@ -86,7 +89,7 @@ To run
 
 Grass: `$ grass74` # in the installation: `ln -s ../Cellar/grass7/7.4.0/bin/grass74 grass74`
 
-Saga:  `$ /usr/local/opt/saga-gis-lts/bin/saga_gui/saga_gui` # you could create a direct link : `ln -s ../Cellar/saga-gis-lts/2.3.2/bin/saga_gui saga_gui`
+Saga:  `$ saga_gui` # create a direct link : `ln -s ../Cellar/saga-gis-lts/2.3.2/bin/saga_gui saga_gui`
 
 References:
 
