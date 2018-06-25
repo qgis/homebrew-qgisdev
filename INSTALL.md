@@ -67,7 +67,7 @@ Modify the file `/usr/local/bin/pyrcc5` and change `pythonw2.7` to `python3`:
 exec python3 -m PyQt5.pyrcc_main ${1+"$@"}
 ```
 
-Build 
+Build and install
 
 `$ brew install proj` # `--build-from-source`
 
@@ -77,7 +77,7 @@ Proj v5.1.0 # With Proj v4: Library not loaded: libproj.13.dylib
 
 `$ brew install libgeotiff` # `--build-from-source`
 
-`$ brew install gdal2` # recommended. Other: `gdal --with-complete`
+`$ brew install osgeo/osgeo4mac/gdal2` # recommended. Other: `gdal --with-complete`
 
 `$ brew install -v --no-sandbox qgis3-dev --with-grass  --with-saga-gis-lts`  # other:  `--with-r` `--with-3d`
 
@@ -103,6 +103,8 @@ keg_only "QGIS fails to load the correct SAGA version, if the latest version is 
 `
 
 For `GRASS.app`, it is not available in `grass7`.
+
+To solve the integration problem of `R in QGIS` see this [post](https://gis.stackexchange.com/questions/200793/integrating-r-in-qgis-with-mac-os-el-captain-missing-dependencies).
 
 References:
 
