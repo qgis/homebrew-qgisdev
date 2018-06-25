@@ -29,7 +29,8 @@ brew remove qt || true
 brew remove pyqt || true
 
 # Add taps
-brew tap homebrew/science || true
+# brew tap homebrew/science || true
+brew tap brewsci/bio || true
 brew tap osgeo/osgeo4mac || true
 
 brew update || brew update
@@ -41,7 +42,7 @@ for f in ${CHANGED_FORMULAE};do
 
   if [ "$(echo ${deps} | grep -c 'python3')" != "0" ];then
     echo "Installing and configuring Homebrew Python3"
-    brew install python3
+    brew install python
 
     # Set up Python .pth files
     # get python3 short version (major.minor)
