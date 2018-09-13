@@ -35,7 +35,7 @@ class Qgis3Dev < Formula
   homepage "https://www.qgis.org"
 
   url "https://github.com/qgis/QGIS.git", :branch => "master"
-  version "2.99"
+  version "3.99"
 
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
@@ -66,7 +66,7 @@ class Qgis3Dev < Formula
     depends_on "doxygen"
   end
 
-  depends_on :python3
+  depends_on "python3"
 
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
@@ -83,7 +83,7 @@ class Qgis3Dev < Formula
   depends_on "expat" # keg_only
   depends_on "proj"
   depends_on "spatialindex"
-  depends_on "homebrew/science/matplotlib"
+  depends_on "brewsci/bio/matplotlib"
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
