@@ -53,6 +53,13 @@ brew install bash-completion
 brew install git
 ```
 
+You need to update `~/.bash_profile` to get homebrew's bash-completion working:
+```
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
+```
+
 ## Python Dependencies
 
 ### Select an interpreter
@@ -196,8 +203,6 @@ pip3 install future numpy psycopg2 matplotlib pyparsing requests pyyaml mock nos
 
 # Add some useful Homebrew taps
 # NOTE: try to avoid tapping homebrew/boneyard
-brew tap homebrew/science
-brew tap homebrew/python
 brew tap qgis/qgisdev
 brew tap osgeo/osgeo4mac
 
@@ -405,7 +410,7 @@ Under ``Kits`` tab, click ``Add``, then configure with:
   QT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
   CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
   CMAKE_FIND_FRAMEWORK:STRING=LAST 
-  CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/qscintilla2;/usr/local/opt/qwt;/usr/local/opt/qwtpolar;/usr/local/opt/qca;/usr/local/opt/gdal2;/usr/local/opt/gsl;/usr/local/opt/geos;/usr/local/opt/proj;/usr/local/opt/libspatialite;/usr/local/opt/spatialindex;/usr/local/opt/fcgi;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison'
+  CMAKE_PREFIX_PATH:STRING='/usr/local/opt/qt5;/usr/local/opt/qt5-webkit;/usr/local/opt/qscintilla2;/usr/local/opt/qwt;/usr/local/opt/qwtpolar;/usr/local/opt/qca;/usr/local/opt/gdal2;/usr/local/opt/gsl;/usr/local/opt/geos;/usr/local/opt/proj;/usr/local/opt/libspatialite;/usr/local/opt/spatialindex;/usr/local/opt/fcgi;/usr/local/opt/expat;/usr/local/opt/sqlite;/usr/local/opt/flex;/usr/local/opt/bison;/usr/local/opt/libzip;/usr/local/opt/libtash1'
   ```
   
   **Notes:**
@@ -507,7 +512,7 @@ If using `osgeo/osgeo4mac/grass7`:
 
 ```
 WITH_GRASS7=TRUE                                  (Add as Boolean)
-GRASS_PREFIX7=/usr/local/opt/grass7/grass-base"   (Add as Directory)
+GRASS_PREFIX7=/usr/local/opt/grass7/grass-base   (Add as Directory)
 ```
 
 #### Fix some CMake module search results
@@ -563,7 +568,7 @@ Alternatively, add the gdal2 packages to your environment directly in QGIS like 
 
 * Import QGIS code style rules
   * Under `Preferences -> C++`, click `Import`
-  * Import `qtcreator_code_style.xml` from `QGIS/doc` folder in QGIS source tree
+  * Import `qtcreator_code_style.xml` from `QGIS/editors/QtCreator` folder in QGIS source tree
   * A "QGIS" code style is imported, which you can assign as the code style for your loaded project (or import just for your project, under `Project Settings` for your project in the `Projects` section of the main window)
 
 ### Useful Qt Creator shortcuts
