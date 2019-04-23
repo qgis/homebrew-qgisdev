@@ -57,7 +57,7 @@ brew install git
 
 ### Select an interpreter
 
-The first important decision to make is regarding whether to use Homebrew's or or another Python 3.x. Currently macOS does not ship with Python 3, and QGIS 3 should be built against Python 3.x.
+The first important decision to make is regarding whether to use Homebrew's or another Python 3.x. Currently macOS does not ship with Python 3, and QGIS 3 should be built against Python 3.x.
 
 > Note: The more Homebrew formulae you install from bottles, the higher likelihood you will end up running into a formulae that requires installing Homebrew's Python 3, since bottles are always built against that Python.
 
