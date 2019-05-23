@@ -1,3 +1,11 @@
+# THIS REPO IS ARCHIVED
+
+“The code and processes described in this repository have been superseded by the [OSGEO4MAC](https://github.com/OSGeo/homebrew-osgeo4mac) project. 
+
+Detailed instructions for setting up a development environment on your macOS machine are now provided in the [QGIS Install Documentation](https://github.com/qgis/QGIS/blob/master/doc/osx.t2t) (which is currently in need of updating). 
+
+Please contribute your macOS build process improvements there.”
+
 # Homebrew-qgisdev
 
 [![Build Status](https://travis-ci.org/qgis/homebrew-qgisdev.svg?branch=master)](https://travis-ci.org/qgis/homebrew-qgisdev)
