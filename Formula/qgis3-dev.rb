@@ -31,11 +31,14 @@ class Qgis3DevUnlinkedFormulae < Requirement
 end
 
 class Qgis3Dev < Formula
+  # support venv
+  include Language::Python::Virtualenv
+
   desc "User friendly open source Geographic Information System"
   homepage "https://www.qgis.org"
 
-  url "https://github.com/qgis/QGIS.git", :branch => "master"
-  version "2.99"
+  url "https://github.com/qgis/QGIS.git", :tag => "final-3_0_1"
+  version "3.0.1"
 
   option "without-ninja", "Disable use of ninja CMake generator"
   option "without-debug", "Disable debug build, which outputs info to system.log or console"
@@ -66,7 +69,7 @@ class Qgis3Dev < Formula
     depends_on "doxygen"
   end
 
-  depends_on :python3
+  depends_on "python"
 
   depends_on "qt" # keg_only
   depends_on "osgeo/osgeo4mac/qt5-webkit" => :recommended # keg_only
@@ -83,18 +86,16 @@ class Qgis3Dev < Formula
   depends_on "expat" # keg_only
   depends_on "proj"
   depends_on "spatialindex"
-  depends_on "homebrew/science/matplotlib"
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
   depends_on "libzip"
+  depends_on "gdal"
 
   # needed for PKI authentication methods that require PKCS#8->PKCS#1 conversion
   depends_on "libtasn1"
 
   # core providers
-  depends_on "osgeo/osgeo4mac/gdal2" # keg_only
-  depends_on "osgeo/osgeo4mac/gdal2-python" # keg_only
   depends_on "osgeo/osgeo4mac/oracle-client-sdk" if build.with? "oracle"
   # TODO: add MSSQL third-party support formula?, :optional
 
@@ -135,7 +136,114 @@ class Qgis3Dev < Formula
   #   version "2.14.0"
   # end
 
+  # for matplotlib
+  depends_on "pkg-config"
+  depends_on "freetype"
+
   needs :cxx11
+
+  # for venv
+  resource "future" do
+    url "https://files.pythonhosted.org/packages/00/2b/8d082ddfed935f3608cc61140df6dcbf0edea1bc3ab52fb6c29ae3e81e85/future-0.16.0.tar.gz"
+    sha256 "e39ced1ab767b5936646cedba8bcce582398233d6a627067d4c6a454c90cfedb"
+  end
+  resource "psycopg2" do
+    url "https://files.pythonhosted.org/packages/74/83/51580322ed0e82cba7ad8e0af590b8fb2cf11bd5aaa1ed872661bd36f462/psycopg2-2.7.4.tar.gz"
+    sha256 "8bf51191d60f6987482ef0cfe8511bbf4877a5aa7f313d7b488b53189cf26209"
+  end
+  resource "python-dateutil" do
+    url "https://files.pythonhosted.org/packages/c5/39/4da7c2dbc4f023fba5fb2325febcadf0d0ce0efdc8bd12083a0f65d20653/python-dateutil-2.7.2.tar.gz"
+    sha256 "9d8074be4c993fbe4947878ce593052f71dac82932a677d49194d8ce9778002e"
+  end
+  resource "httplib2" do
+    url "https://files.pythonhosted.org/packages/fd/ce/aa4a385e3e9fd351737fd2b07edaa56e7a730448465aceda6b35086a0d9b/httplib2-0.11.3.tar.gz"
+    sha256 "e71daed9a0e6373642db61166fa70beecc9bf04383477f84671348c02a04cbdf"
+  end
+  resource "pytz" do
+    url "https://files.pythonhosted.org/packages/10/76/52efda4ef98e7544321fd8d5d512e11739c1df18b0649551aeccfb1c8376/pytz-2018.4.tar.gz"
+    sha256 "c06425302f2cf668f1bba7a0a03f3c1d34d4ebeef2c72003da308b3947c7f749"
+  end
+  resource "Cycler" do
+    url "https://files.pythonhosted.org/packages/c2/4b/137dea450d6e1e3d474e1d873cd1d4f7d3beed7e0dc973b06e8e10d32488/cycler-0.10.0.tar.gz"
+    sha256 "cd7b2d1018258d7247a71425e9f26463dfb444d411c39569972f4ce586b0c9d8"
+  end
+  resource "pyparsing" do
+    url "https://files.pythonhosted.org/packages/3c/ec/a94f8cf7274ea60b5413df054f82a8980523efd712ec55a59e7c3357cf7c/pyparsing-2.2.0.tar.gz"
+    sha256 "0832bcf47acd283788593e7a0f542407bd9550a55a8a8435214a1960e04bcb04"
+  end
+  resource "six" do
+    url "https://files.pythonhosted.org/packages/16/d8/bc6316cf98419719bd59c91742194c111b6f2e85abac88e496adefaf7afe/six-1.11.0.tar.gz"
+    sha256 "70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
+  end
+  resource "coverage" do
+    url "https://files.pythonhosted.org/packages/35/fe/e7df7289d717426093c68d156e0fd9117c8f4872b6588e8a8928a0f68424/coverage-4.5.1.tar.gz"
+    sha256 "56e448f051a201c5ebbaa86a5efd0ca90d327204d8b059ab25ad0f35fbfd79f1"
+  end
+  resource "nose2" do
+    url "https://files.pythonhosted.org/packages/93/46/a389a65237d0520bb4a98fc174fdf6568ad9dcc79b9c1d1f30afc6776031/nose2-0.7.4.tar.gz"
+    sha256 "954a62cfb2d2ac06dad32995cbc822bf00cc11e20d543963515932fd4eff33fa"
+  end
+  resource "Pygments" do
+    url "https://files.pythonhosted.org/packages/71/2a/2e4e77803a8bd6408a2903340ac498cb0a2181811af7c9ec92cb70b0308a/Pygments-2.2.0.tar.gz"
+    sha256 "dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc"
+  end
+  resource "Jinja2" do
+    url "https://files.pythonhosted.org/packages/56/e6/332789f295cf22308386cf5bbd1f4e00ed11484299c5d7383378cf48ba47/Jinja2-2.10.tar.gz"
+    sha256 "f84be1bb0040caca4cea721fcbbbbd61f9be9464ca236387158b0feea01914a4"
+  end
+  resource "MarkupSafe" do
+    url "https://files.pythonhosted.org/packages/4d/de/32d741db316d8fdb7680822dd37001ef7a448255de9699ab4bfcbdf4172b/MarkupSafe-1.0.tar.gz"
+    sha256 "a6be69091dac236ea9c6bc7d012beab42010fa914c459791d627dad4910eb665"
+  end
+  resource "PyYAML" do
+    url "https://files.pythonhosted.org/packages/4a/85/db5a2df477072b2902b0eb892feb37d88ac635d36245a72a6a69b23b383a/PyYAML-3.12.tar.gz"
+    sha256 "592766c6303207a20efc445587778322d7f73b161bd994f227adaa341ba212ab"
+  end
+  resource "requests" do
+    url "https://files.pythonhosted.org/packages/b0/e1/eab4fc3752e3d240468a8c0b284607899d2fbfb236a56b7377a329aa8d09/requests-2.18.4.tar.gz"
+    sha256 "9c443e7324ba5b85070c4a818ade28bfabedf16ea10206da1132edaa6dda237e"
+  end
+  resource "OWSLib" do
+    url "https://files.pythonhosted.org/packages/ac/71/ff2fbfa64fca17069ce30fac324533aa686c5cb64e6b5f522faed558848f/OWSLib-0.16.0.tar.gz"
+    sha256 "ec95a5e93c145a5d84b0074b9ea27570943486552a669151140debf08a100554"
+  end
+  resource "urllib3" do
+    url "https://files.pythonhosted.org/packages/ee/11/7c59620aceedcc1ef65e156cc5ce5a24ef87be4107c2b74458464e437a5d/urllib3-1.22.tar.gz"
+    sha256 "cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"
+  end
+  resource "chardet" do
+    url "https://files.pythonhosted.org/packages/fc/bb/a5768c230f9ddb03acc9ef3f0d4a3cf93462473795d18e9535498c8f929d/chardet-3.0.4.tar.gz"
+    sha256 "84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"
+  end
+  resource "certifi" do
+    url "https://files.pythonhosted.org/packages/15/d4/2f888fc463d516ff7bf2379a4e9a552fef7f22a94147655d9b1097108248/certifi-2018.1.18.tar.gz"
+    sha256 "edbc3f203427eef571f79a7692bb160a2b0f7ccaa31953e99bd17e307cf63f7d"
+  end
+  resource "idna" do
+    url "https://files.pythonhosted.org/packages/f4/bd/0467d62790828c23c47fc1dfa1b1f052b24efdf5290f071c7a91d0d82fd3/idna-2.6.tar.gz"
+    sha256 "2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f"
+  end
+  resource "pyproj" do
+    url "https://files.pythonhosted.org/packages/29/72/5c1888c4948a0c7b736d10e0f0f69966e7c0874a660222ed0a2c2c6daa9f/pyproj-1.9.5.1.tar.gz"
+    sha256 "53fa54c8fa8a1dfcd6af4bf09ce1aae5d4d949da63b90570ac5ec849efaf3ea8"
+  end
+  resource "matplotlib" do
+    url "https://files.pythonhosted.org/packages/ec/ed/46b835da53b7ed05bd4c6cae293f13ec26e877d2e490a53a709915a9dcb7/matplotlib-2.2.2.tar.gz"
+    sha256 "4dc7ef528aad21f22be85e95725234c5178c0f938e2228ca76640e5e84d8cde8"
+  end
+  resource "kiwisolver" do
+    url "https://files.pythonhosted.org/packages/31/60/494fcce70d60a598c32ee00e71542e52e27c978e5f8219fae0d4ac6e2864/kiwisolver-1.0.1.tar.gz"
+    sha256 "ce3be5d520b4d2c3e5eeb4cd2ef62b9b9ab8ac6b6fedbaa0e39cdb6f50644278"
+  end
+  resource "numpy" do
+    url "https://files.pythonhosted.org/packages/0b/66/86185402ee2d55865c675c06a5cfef742e39f4635a4ce1b1aefd20711c13/numpy-1.14.2.zip"
+    sha256 "facc6f925c3099ac01a1f03758100772560a0b020fb9d70f210404be08006bcb"
+  end
+  resource "GDAL" do
+    url "https://files.pythonhosted.org/packages/4d/74/15958684bdec900d72c13fdc7e455d75d36437018e238f8c8fc7dd5aad37/GDAL-2.2.4.tar.gz"
+    sha256 "7cc793b62f375612415ab7c10d10d45f727d42c39bf6ea51eb4b82f0c996e1e6"
+  end
+
 
   def install
     ENV.cxx11
@@ -150,32 +258,12 @@ class Qgis3Dev < Formula
       puts "python_site_packages: #{python_site_packages}"
       puts "python_prefix: #{python_prefix}"
       puts "qgis_python_packages: #{qgis_python_packages}"
-      puts "gdal_python_packages: #{gdal_python_packages}"
-      puts "gdal_python_opt_bin: #{gdal_python_opt_bin}"
       puts "gdal_opt_bin: #{gdal_opt_bin}"
     end
 
-    # Vendor required python3 pkgs if they are missing
-    # TODO: this should really be a requirements.txt in src tree
-    py_req = %w[
-      future
-      psycopg2
-      python-dateutil
-      httplib2
-      pytz
-      six
-      nose2
-      pygments
-      jinja2
-      pyyaml
-      requests
-      owslib
-    ].freeze
-
-    orig_user_base = ENV["PYTHONUSERBASE"]
-    ENV["PYTHONUSERBASE"] = libexec/"python"
-    system HOMEBREW_PREFIX/"bin/pip3", "install", "--user", *py_req
-    ENV["PYTHONUSERBASE"] = orig_user_base
+    # venv
+    venv3 = virtualenv_create(libexec, "python3")
+    venv3.pip_install resources
 
     # Set bundling level back to 0 (the default in all versions prior to 1.8.0)
     # so that no time and energy is wasted copying the Qt frameworks into QGIS.
@@ -211,7 +299,7 @@ class Qgis3Dev < Formula
       qwt
       qwtpolar
       qca
-      gdal2
+      gdal
       gsl
       geos
       proj
@@ -246,7 +334,7 @@ class Qgis3Dev < Formula
 
     # Prefer opt_prefix for CMake modules that find versioned prefix by default
     # This keeps non-critical dependency upgrades from breaking QGIS linking
-    args << "-DGDAL_LIBRARY=#{Formula["gdal2"].opt_lib}/libgdal.dylib"
+    args << "-DGDAL_LIBRARY=#{Formula["gdal"].opt_lib}/libgdal.dylib"
     args << "-DGEOS_LIBRARY=#{Formula["geos"].opt_lib}/libgeos_c.dylib"
     args << "-DGSL_CONFIG=#{Formula["gsl"].opt_bin}/gsl-config"
     args << "-DGSL_INCLUDE_DIR=#{Formula["gsl"].opt_include}"
@@ -297,7 +385,8 @@ class Qgis3Dev < Formula
 
     # handle custom site-packages for keg-only modules and packages
     ENV.append_path "PYTHONPATH", python_site_packages
-    ENV.append_path "PYTHONPATH", libexec/"python/lib/python/site-packages"
+    ENV.append_path "PYTHONPATH", qgis_python_packages
+
 
     # handle some compiler warnings
     # ENV["CXX_EXTRA_FLAGS"] = "-Wno-unused-private-field -Wno-deprecated-register"
@@ -305,7 +394,7 @@ class Qgis3Dev < Formula
     #   ENV.append "CXX_EXTRA_FLAGS", "-Wno-inconsistent-missing-override"
     # end
 
-    ENV.prepend_path "PATH", libexec/"python/bin"
+    ENV.prepend_path "PATH", libexec/"bin"
 
     mkdir "build" do
       # editor = "/usr/local/bin/bbedit"
@@ -405,10 +494,11 @@ class Qgis3Dev < Formula
       #{opt_libexec}/python/lib/python/site-packages
       #{pypth}
     ]
+    # for venv test
+    #site_packages = "lib/python#{version}/site-packages"
+    #pypths << "import site; site.addsitedir('#{libexec/site_packages}')\n"
 
     pths.insert(0, gdal_opt_bin)
-    pths.insert(0, gdal_python_opt_bin)
-    pypths.insert(0, gdal_python_packages)
 
     if opts.include?("with-gpsbabel")
       pths.insert(0, Formula["gpsbabel"].opt_bin.to_s)
@@ -418,7 +508,7 @@ class Qgis3Dev < Formula
       :PATH => pths.join(pthsep),
       :PYTHONPATH => pypths.join(pthsep),
       :GDAL_DRIVER_PATH => "#{HOMEBREW_PREFIX}/lib/gdalplugins",
-      :GDAL_DATA => "#{Formula["gdal2"].opt_share}/gdal",
+      :GDAL_DATA => "#{Formula["gdal"].opt_share}/gdal",
     }
 
     # handle multiple Qt plugins directories
@@ -497,7 +587,7 @@ class Qgis3Dev < Formula
   end
 
   def caveats
-    s = <<-EOS.undent
+    s = <<-EOS
       Bottles support only Homebrew's Python3
 
       QGIS is built as an application bundle. Environment variables for the
@@ -516,11 +606,11 @@ class Qgis3Dev < Formula
             bundle they are not.
 
       For standalone Python3 development, set the following environment variable:
-        export PYTHONPATH=#{qgis_python_packages}:#{gdal_python_packages}:#{python_site_packages}:$PYTHONPATH
+        export PYTHONPATH=#{qgis_python_packages}:#{python_site_packages}:$PYTHONPATH
 
     EOS
 
-    s += <<-EOS.undent
+    s += <<-EOS
       If you have built GRASS 7 for the Processing plugin set the following in QGIS:
         Processing->Options: Providers->GRASS GIS 7 commands->GRASS 7 folder to:
            #{HOMEBREW_PREFIX}/opt/grass7/grass-base
@@ -542,13 +632,14 @@ class Qgis3Dev < Formula
   end
 
   def python_exec
-    if brewed_python?
-      Formula["python3"].opt_bin/"python3"
-    else
-      py_exec = `which python3`.strip
-      raise if py_exec == ""
-      py_exec
-    end
+    libexec/"bin/python"
+    # if brewed_python?
+    #   Formula["python"].opt_bin/"python3"
+    # else
+    #   py_exec = `which python`.strip
+    #   raise if py_exec == ""
+    #   py_exec
+    # end
   end
 
   def py_ver
@@ -556,11 +647,11 @@ class Qgis3Dev < Formula
   end
 
   def brewed_python?
-    Formula["python3"].linked_keg.exist?
+    Formula["python"].linked_keg.exist?
   end
 
   def python_site_packages
-    HOMEBREW_PREFIX/"lib/python#{py_ver}/site-packages"
+    libexec/"lib/python#{py_ver}/site-packages"
   end
 
   def python_prefix
@@ -571,19 +662,11 @@ class Qgis3Dev < Formula
     opt_lib/"python#{py_ver}/site-packages".to_s
   end
 
-  def gdal_python_packages
-    Formula["gdal2-python"].opt_lib/"python#{py_ver}/site-packages".to_s
-  end
-
-  def gdal_python_opt_bin
-    Formula["gdal2-python"].opt_bin.to_s
-  end
-
   def gdal_opt_bin
-    Formula["gdal2"].opt_bin.to_s
+    Formula["gdal"].opt_bin.to_s
   end
 
   def module_importable?(mod)
-    `#{python_exec} -c 'import sys;sys.path.insert(1, "#{gdal_python_packages}"); import #{mod}'`.strip
+    `#{python_exec} -c 'import sys; import #{mod}'`.strip
   end
 end
