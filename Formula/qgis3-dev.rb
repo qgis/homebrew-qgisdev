@@ -83,7 +83,6 @@ class Qgis3Dev < Formula
   depends_on "expat" # keg_only
   depends_on "proj"
   depends_on "spatialindex"
-  depends_on "homebrew/science/matplotlib"
   depends_on "fcgi" if build.with? "server"
   # use newer postgresql client than Apple's, also needed by `psycopg2`
   depends_on "postgresql" => :recommended
@@ -170,6 +169,7 @@ class Qgis3Dev < Formula
       pyyaml
       requests
       owslib
+      matplotlib
     ].freeze
 
     orig_user_base = ENV["PYTHONUSERBASE"]
